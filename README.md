@@ -1,4 +1,4 @@
-# Proyek Tengah Semester PBP
+# Proyek Akhir Semester PBP D08
 ## GadgetPort📱💻🛒
 _"Empowering Your World, One Gadget at a Time"_  <br>
 link APK : [GadgetPort]() # TBA
@@ -115,5 +115,5 @@ Laptop     : https://www.kaggle.com/datasets/owm4096/laptop-prices <br>
     - Menambah produk yang ingin dijual
     - Mengedit dan menghapus detail produk dan produk yang dijual 
 
-
-
+### Alur pengintegrasian dengan web service
+1. 
