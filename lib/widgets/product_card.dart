@@ -15,6 +15,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: const Color(0xFF393E46), // Abu-abu gelap untuk kartu produk
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [
@@ -25,12 +26,18 @@ class ProductCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               productName,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // Teks produk
+              ),
             ),
           ),
           Text(
             productPrice,
-            style: const TextStyle(color: Colors.teal),
+            style: const TextStyle(
+              color: Color(0xFF00ADB5), // Hijau toska untuk harga
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
