@@ -1,7 +1,7 @@
 # Proyek Tengah Semester PBP
 ## GadgetPort📱💻🛒
 _"Empowering Your World, One Gadget at a Time"_  <br>
-link APK : [-]()
+link APK : [GadgetPort]() # TBA
 
 ### Nama Anggota 🧑‍🎓👩‍🎓👨‍🎓🧑‍🎓👨‍🎓
 1. Akhyar Rasyid Asy syifa (2306241682)
@@ -98,6 +98,10 @@ Kategori Utama : Gadget
 - Laptop
 - Headset/TWS
 
+Headset    : https://www.kaggle.com/datasets/midhundasl/amazon-headset-specs <br>
+HP         : https://www.kaggle.com/datasets/veer098/mobile-phone <br>
+Laptop     : https://www.kaggle.com/datasets/owm4096/laptop-prices <br>
+
 ### Role pengguna 🙋🏻‍♀
 - **Pelanggan** (perlu login)
     - Melihat daftar dan detail produk gadget
@@ -109,10 +113,7 @@ Kategori Utama : Gadget
     - Mencari berdasarkan nama produk gadget
 - **Admin** (perlu login)
     - Menambah produk yang ingin dijual
-    - Mengedit dan menghapus detail produk dan produk yang dijual
- 
-
-### Alur pengintegrasian dengan web service
+    - Mengedit dan menghapus detail produk dan produk yang dijual 
 
 
 
