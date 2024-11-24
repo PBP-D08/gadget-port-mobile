@@ -116,4 +116,13 @@ Laptop     : https://www.kaggle.com/datasets/owm4096/laptop-prices <br>
     - Mengedit dan menghapus detail produk dan produk yang dijual 
 
 ### Alur pengintegrasian dengan web service
-1. 
+Langkah yang kami lakukan untuk mengintegrasikan GadgetPort mobile dengan web service Django adalah:
+1. Mengimplementasikan REST API pada Django views.py dengan menggunakan JsonResponse atau Django JSON Serializer.
+2. Menambahkan dependensi http ke proyek; dependensi ini digunakan untuk bertukar HTTP request antara aplikasi dengan web service.
+3. Menggunakan dependensi `pbp_django_auth` untuk mengintegrasi *authentication* dari django web service
+4. Membuat model sesuai dengan respons dari data yang berasal dari web service GadgetPort.
+5. Membuat http request ke web service menggunakan dependensi http.
+6. Mengkonversikan objek yang didapatkan dari web service ke model yang telah dibuat sebelumnya.
+7. Menampilkan data yang telah dikonversi ke aplikasi dengan  `FutureBuilder`
+8. Memanfaatkan method class `CookieRequest` dari `pbp_django_auth`, seperti `.login()`, dan `.register()` untuk mengurus request login dan register akun baru melalui aplikasi *mobile*.
+9. Mengimplementasikan back-end pada project Django dengan menggunakan konsep asynchronous HTTP.
