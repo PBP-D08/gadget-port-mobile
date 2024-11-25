@@ -126,3 +126,6 @@ Langkah yang kami lakukan untuk mengintegrasikan GadgetPort mobile dengan web se
 7. Menampilkan data yang telah dikonversi ke aplikasi dengan  `FutureBuilder`
 8. Memanfaatkan method class `CookieRequest` dari `pbp_django_auth`, seperti `.login()`, dan `.register()` untuk mengurus request login dan register akun baru melalui aplikasi *mobile*.
 9. Mengimplementasikan back-end pada project Django dengan menggunakan konsep asynchronous HTTP.
+
+Diagram Integrasi Django - Flutter : 
+![image](https://github.com/user-attachments/assets/1925100d-a42d-4a8f-8c6e-6e8bcb460312)
