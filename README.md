@@ -39,7 +39,7 @@ Berikut adalah daftar modul yang diimplementasikan:
 
 3. **Modul Katalog Produk — Bersama** 
 
-      Modul ini berfungsi untuk melihat detail produk serta dapat menggunakan filter untuk pencarian produk.
+      Modul ini berfungsi untuk melihat list produk dan detail produk serta dapat menggunakan filter untuk pencarian produk.
       
       Pelanggan | Admin
       -|-
@@ -84,11 +84,11 @@ Berikut adalah daftar modul yang diimplementasikan:
    
 8. **Modul Toko — Muhammad Albyarto Ghazali**
 
-      Modul ini berfungsi untuk mengatur pengelolaan produk yang dijual oleh toko, termasuk kategori produk dan harga.
+      Modul ini berfungsi untuk mengatur pengelolaan toko gadget serta mengatur pengelolaan produk yang dijual oleh toko, termasuk kategori produk dan harga.
    
       Pelanggan|Admin
       -|-
-      Pelanggan dapat melihat tiap produk yang dijual oleh toko, termasuk kategori produk dan harga.|Admin dapat menambah, mengubah, serta menghapus produk pada toko mereka.
+      Pelanggan dapat melihat list toko yang telah ditambahkan oleh admin serta tiap produk yang dijual oleh toko, termasuk kategori produk dan harga.|Admin dapat menambah, mengubah, serta menghapus toko gadget dan produk pada toko gadget.
 
 ### Sumber Dataset 📊
 Kategori Utama : Gadget
