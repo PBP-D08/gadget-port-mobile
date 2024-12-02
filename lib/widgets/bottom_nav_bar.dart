@@ -19,6 +19,10 @@ class BottomNavBar extends StatelessWidget {
           icon: Icon(Icons.account_circle),
           label: 'Profile',
         ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.shopping_cart),
+          label: 'Cart',
+        ),
       ],
     );
   }
