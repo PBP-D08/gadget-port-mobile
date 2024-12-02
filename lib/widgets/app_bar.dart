@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   const CustomAppBar({super.key, required this.title});
@@ -9,12 +8,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(title),
       centerTitle: true,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.shopping_cart),
-          onPressed: () {},
-        ),
-      ],
+      // actions: [
+      // ],
+      // titleTextStyle: TextStyle(
+      //   color: Colors.lightBlue[200],
+      //   fontWeight: FontWeight.w900,
+      //   fontFamily: 'Nunito',
+      //   fontSize: 20,
+      // ),
     );
   }
 
