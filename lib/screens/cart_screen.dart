@@ -1,42 +1,53 @@
 import 'package:flutter/material.dart';
 
 class CartScreen extends StatelessWidget {
+  const CartScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    // Get the theme data
+    final ThemeData theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text('Keranjang'),
+        title: const Text('Keranjang'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Column(
         children: [
-          // Bagian header info toko
+          // Store info header
           Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             color: Colors.white,
             child: Row(
               children: [
-                Icon(Icons.store, color: Colors.green),
-                SizedBox(width: 8),
+                Icon(Icons.store, color: theme.primaryColor),
+                const SizedBox(width: 8),
                 Text(
                   'Nama Toko',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
           ),
-          Divider(height: 1),
-          // Daftar item di keranjang
+          const Divider(height: 1),
+          
+          // Cart items list
           Expanded(
             child: ListView.builder(
-              itemCount: 3, // Ganti dengan jumlah item yang dinamis
+              itemCount: 3, // Replace with dynamic item count
               itemBuilder: (context, index) {
                 return Container(
                   color: Colors.white,
-                  margin: EdgeInsets.only(bottom: 8),
+                  margin: const EdgeInsets.only(bottom: 8),
                   child: Row(
                     children: [
-                      // Gambar produk
+                      // Product image
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Image.network(
@@ -52,35 +63,40 @@ class CartScreen extends StatelessWidget {
                           children: [
                             Text(
                               'Nama Produk',
-                              style: TextStyle(
-                                fontSize: 16,
+                              style: theme.textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
-                            SizedBox(height: 4),
-                            Text('Rp 50.000'),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Rp 50.000',
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Tombol tambah/kurang jumlah
+                                // Add/remove quantity buttons
                                 Row(
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.remove),
+                                      icon: const Icon(Icons.remove),
                                       onPressed: () {},
                                     ),
-                                    Text('1'), // Jumlah item
+                                    Text(
+                                      '1', // Item quantity
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
                                     IconButton(
-                                      icon: Icon(Icons.add),
+                                      icon: const Icon(Icons.add),
                                       onPressed: () {},
                                     ),
                                   ],
                                 ),
-                                // Tombol hapus
+                                // Delete button
                                 IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  icon: const Icon(Icons.delete, color: Colors.red),
                                   onPressed: () {},
                                 ),
                               ],
@@ -94,36 +110,42 @@ class CartScreen extends StatelessWidget {
               },
             ),
           ),
-          // Bagian footer untuk total harga dan tombol checkout
+          
+          // Footer with total price and checkout button
           Container(
             color: Colors.white,
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Total Harga', style: TextStyle(fontSize: 16)),
+                    Text(
+                      'Total Harga', 
+                      style: theme.textTheme.bodyLarge,
+                    ),
                     Text(
                       'Rp 150.000',
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    // Aksi checkout
+                    // Checkout action
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    minimumSize: Size(double.infinity, 48),
+                    minimumSize: const Size(double.infinity, 48),
                   ),
                   child: Text(
                     'Checkout',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
