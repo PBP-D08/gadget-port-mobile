@@ -1,0 +1,1 @@
+Tambahin folder sesuai module masing masing dengan nama yang sama seperti di django ya 

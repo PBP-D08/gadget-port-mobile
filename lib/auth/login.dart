@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:gadget_port_mobile/auth/register.dart';
 import 'package:gadget_port_mobile/auth/widgets/login_button.dart';
-import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:gadget_port_mobile/screens/home_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,34 +30,28 @@ class _LoginPageState extends State<LoginPage> {
       loadingBallAppear = true;
     });
 
-    final url = Uri.parse('localhost:8000/signin/loginflutter'); // Ganti dengan endpoint API Anda
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'username': username, 'password': password}),
+    final request = context.read<CookieRequest>();
+    final response = await request.login(
+      "http://10.0.2.2:8000/signin/loginflutter/", // Sesuaikan URL dengan backend Anda
+      {'username': username, 'password': password},
     );
 
     setState(() {
       loadingBallAppear = false;
     });
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data['status'] == true) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("${data['message']} Selamat datang, ${data['username']}"),
-          backgroundColor: Colors.green,
-        ));
-        // Arahkan ke layar Home
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(data['message']),
-          backgroundColor: Colors.red,
-        ));
-      }
+    if (request.loggedIn) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("${response['message']} Selamat datang, ${response['username']}"),
+        backgroundColor: Colors.green,
+      ));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to connect to server. Please try again.'),
+        content: Text(response['message'] ?? 'Login gagal. Silakan coba lagi.'),
         backgroundColor: Colors.red,
       ));
     }
@@ -69,26 +64,28 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         bottom: false,
         child: loadingBallAppear
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : Padding(
-                padding: EdgeInsets.symmetric(horizontal: 50.0),
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 70),
+                      const SizedBox(height: 70),
                       TweenAnimationBuilder<double>(
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         tween: Tween(begin: 1, end: _elementsOpacity),
                         builder: (_, value, __) => Opacity(
                           opacity: value,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.flutter_dash,
-                                  size: 60, color: Color(0xff21579C)),
-                              SizedBox(height: 25),
-                              Text(
+                              Image.asset(
+                                'assets/images/Logo_gadget-port.png', // Make sure this path is correct
+                                height: 60, // Adjust the size of the logo
+                              ),
+                              const SizedBox(height: 25),
+                              const Text(
                                 "Welcome,",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 35),
@@ -103,9 +100,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 50),
+                      const SizedBox(height: 50),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Column(
                           children: [
                             TextField(
@@ -118,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 40),
+                            const SizedBox(height: 40),
                             TextField(
                               controller: passwordController,
                               decoration: InputDecoration(
@@ -130,8 +127,10 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               obscureText: true,
                             ),
-                            SizedBox(height: 60),
+                            const SizedBox(height: 40),
                             GetStartedButton(
+                              usernameController: usernameController,
+                              passwordController: passwordController,
                               elementsOpacity: _elementsOpacity,
                               onTap: () async {
                                 setState(() {
@@ -148,30 +147,39 @@ class _LoginPageState extends State<LoginPage> {
                                 });
                               },
                               onAnimatinoEnd: () async {
-                                await Future.delayed(
-                                    Duration(milliseconds: 500));
+                                await Future.delayed(const Duration(milliseconds: 500));
                                 setState(() {
                                   loadingBallAppear = true;
                                 });
                               },
                             ),
-                             const SizedBox(height: 36.0),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RegisterPage()),
-                                );
-                              },
-                              child: Text(
-                                'Don\'t have an account? Register',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 16.0,
+
+                            const SizedBox(height: 36.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Don't have an account? ",
+                                  style: TextStyle(fontSize: 16.0),
                                 ),
-                              ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const RegisterPage(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    'Register',
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(255, 52, 152, 219),
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
