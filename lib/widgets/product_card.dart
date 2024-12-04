@@ -15,7 +15,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF393E46), // Abu-abu gelap untuk kartu produk
+      color: const Color.fromARGB(255, 191, 219, 254), // Abu-abu gelap untuk kartu produk
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [
