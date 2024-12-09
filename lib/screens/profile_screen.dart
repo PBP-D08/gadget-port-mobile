@@ -90,7 +90,12 @@ class ProfileScreen extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => const BioApp()),
                     );
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: const Text('Add Bio'),
                 ),
               ],
@@ -148,7 +153,7 @@ Widget _buildQuickAccessButton(BuildContext context, String label, Widget destin
       );
     },
     style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.blue,
+      primary: Colors.blue, // Corrected from backgroundColor to primary
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),

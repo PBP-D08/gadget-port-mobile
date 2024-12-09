@@ -13,8 +13,7 @@ class EditBioApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Edit Bio',
       theme: ThemeData(
-        primaryColor: const Color.fromARGB(
-          255, 191, 219, 254),
+        primaryColor: const Color.fromARGB(255, 191, 219, 254),
         scaffoldBackgroundColor: const Color.fromARGB(255, 232, 242, 255), // Gray-100 background
       ),
       home: const EditBioScreen(),
@@ -89,8 +88,7 @@ class _EditBioScreenState extends State<EditBioScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(
-          255, 191, 219, 254),
+                    color: Color.fromARGB(255, 191, 219, 254),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -119,8 +117,7 @@ class _EditBioScreenState extends State<EditBioScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: const BorderSide(
-                              color: Color.fromARGB(
-          255, 191, 219, 254),
+                              color: Color.fromARGB(255, 191, 219, 254),
                               width: 2,
                             ),
                           ),
@@ -136,8 +133,7 @@ class _EditBioScreenState extends State<EditBioScreen> {
                       ElevatedButton(
                         onPressed: _saveChanges,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(
-          255, 191, 219, 254),
+                          backgroundColor: const Color.fromARGB(255, 191, 219, 254),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

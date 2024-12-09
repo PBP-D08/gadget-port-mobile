@@ -13,8 +13,7 @@ class EditProfileApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Edit Profile',
       theme: ThemeData(
-        primaryColor: const Color.fromARGB(
-          255, 191, 219, 254),
+        primaryColor: const Color.fromARGB(255, 191, 219, 254),
         scaffoldBackgroundColor: const Color.fromARGB(255, 241, 247, 255), // Gray-100 background
       ),
       home: const EditProfileScreen(),
@@ -84,8 +83,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(
-          255, 191, 219, 254),
+                      color: Color.fromARGB(255, 191, 219, 254),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -104,11 +102,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const SizedBox(height: 20),
                   _buildDropdownField(),
                   const SizedBox(height: 20),
-                  ElevatedButton(
+                  TextButton(
                     onPressed: _saveChanges,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-          255, 191, 219, 254),
+                    style: TextButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 191, 219, 254),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -161,8 +158,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(
-                color: Color.fromARGB(
-          255, 191, 219, 254),
+                color: Color.fromARGB(255, 191, 219, 254),
                 width: 2,
               ),
             ),
@@ -206,8 +202,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(
-                color: Color.fromARGB(
-          255, 191, 219, 254),
+                color: Color.fromARGB(255, 191, 219, 254),
                 width: 2,
               ),
             ),

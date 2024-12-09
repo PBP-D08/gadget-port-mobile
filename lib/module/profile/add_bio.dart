@@ -130,9 +130,9 @@ class _BioScreenState extends State<BioScreen> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      ElevatedButton(
+                      TextButton(
                         onPressed: _saveBio,
-                        style: ElevatedButton.styleFrom(
+                        style: TextButton.styleFrom(
                           backgroundColor: const Color(0xFF6499E9), // Fixed
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
