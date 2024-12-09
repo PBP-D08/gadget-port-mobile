@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/screens/checkout_screen.dart';
 import 'package:gadget_port_mobile/widgets/app_bar.dart';
 import 'package:gadget_port_mobile/widgets/bottom_nav_bar.dart';
 
@@ -264,7 +265,14 @@ class CartScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CheckoutScreen(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.primaryColor,
                       padding: const EdgeInsets.symmetric(
@@ -276,7 +284,7 @@ class CartScreen extends StatelessWidget {
                       ),
                     ),
                     child: const Text(
-                      'Buy',
+                      'Checkout',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
