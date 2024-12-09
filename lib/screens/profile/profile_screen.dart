@@ -52,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _fetchProfileData() async {
-    final response = await http.get(Uri.parse('http://127.0.0.1:8000/user/profile/json/'));
+    final response = await http.get(Uri.parse('http://127.0.0.1:8000/user/profile/view/json/'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _deleteBio() async {
     // Panggil API untuk menghapus bio
-    final response = await http.delete(Uri.parse('http://127.0.0.1:8000/user/bio/delete/'));
+    final response = await http.delete(Uri.parse('http://127.0.0.1:8000/user/profile/delete_bio/'));
 
     if (response.statusCode == 200) {
       setState(() {

@@ -48,7 +48,7 @@ class _EditBioScreenState extends State<EditBioScreen> {
   }
 
   Future<void> _fetchBio() async {
-    const String url = 'http://127.0.0.1:8000/user/profile/json'; // Ganti dengan URL API Anda
+    const String url = 'http://127.0.0.1:8000/user/profile/edit_bio/json'; // Ganti dengan URL API Anda
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -70,7 +70,7 @@ class _EditBioScreenState extends State<EditBioScreen> {
   }
 
   Future<void> _saveBio() async {
-    const String url = 'http://127.0.0.1:8000/user/profile/'; // Ganti dengan URL API Anda
+    const String url = 'http://127.0.0.1:8000/user/profile/edit_bio'; // Ganti dengan URL API Anda
     try {
       final response = await http.post(
         Uri.parse(url),

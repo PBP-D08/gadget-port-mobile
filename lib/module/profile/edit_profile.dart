@@ -56,7 +56,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _fetchProfile() async {
-    const url = 'http://127.0.0.1:8000/user/profile/json'; // Adjust the endpoint
+    const url = 'http://127.0.0.1:8000/user/profile/edit/json'; // Adjust the endpoint
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -77,7 +77,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _saveProfile() async {
-    const url = 'http://127.0.0.1:8000/user/profile'; // Adjust the endpoint
+    const url = 'http://127.0.0.1:8000/user/profile/edit'; // Adjust the endpoint
     final body = json.encode({
       'user__username': _usernameController.text,
       'user__full_name': _fullnameController.text,

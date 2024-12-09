@@ -52,7 +52,7 @@ class _BioScreenState extends State<BioScreen> {
   Future<void> _saveBio() async {
     if (_formKey.currentState?.validate() ?? false) {
       final bio = _bioController.text;
-      const String apiUrl = "http://127.0.0.1:8000/user/profile/";
+      const String apiUrl = "http://127.0.0.1:8000/user/profile/edit_bio";
 
       try {
         final response = await http.post(

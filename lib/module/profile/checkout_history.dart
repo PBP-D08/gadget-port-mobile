@@ -1,4 +1,6 @@
+import 'dart:convert';  // To decode JSON
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const CheckoutHistoryApp());
@@ -13,37 +15,52 @@ class CheckoutHistoryApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Riwayat Checkout',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color.fromARGB(
-          255, 191, 219, 254),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 191, 219, 254),
       ),
       home: const CheckoutHistoryScreen(),
     );
   }
 }
 
-class CheckoutHistoryScreen extends StatelessWidget {
+class CheckoutHistoryScreen extends StatefulWidget {
   const CheckoutHistoryScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // Example order data
-    final List<Map<String, dynamic>> orders = [
-      {
-        'id': 123,
-        'grand_total': 'Rp 150,000',
-        'address': {'full_address': 'Jl. Merdeka No. 1, Jakarta'},
-        'shipping_method': {'name': 'JNE Regular'},
-        'created_at': '2024-12-09 12:34',
-      },
-      {
-        'id': 124,
-        'grand_total': 'Rp 200,000',
-        'address': {'full_address': 'Jl. Sudirman No. 7, Bandung'},
-        'shipping_method': {'name': 'GoSend'},
-        'created_at': '2024-12-08 15:20',
-      },
-    ];
+  _CheckoutHistoryScreenState createState() => _CheckoutHistoryScreenState();
+}
 
+class _CheckoutHistoryScreenState extends State<CheckoutHistoryScreen> {
+  bool _isLoading = true;
+  List<Map<String, dynamic>> _orders = [];
+  String _errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCheckoutHistory();
+  }
+
+  // Function to fetch checkout history
+  Future<void> _fetchCheckoutHistory() async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:8000/user/profile/checkout_history/'));
+
+    if (response.statusCode == 200) {
+      // Parse the JSON response
+      final List<dynamic> data = json.decode(response.body);
+      setState(() {
+        _orders = data.map((order) => Map<String, dynamic>.from(order)).toList();
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _errorMessage = 'Failed to load checkout history.';
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -56,47 +73,49 @@ class CheckoutHistoryScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: orders.isNotEmpty
-            ? ListView.builder(
-                itemCount: orders.length,
-                itemBuilder: (context, index) {
-                  final order = orders[index];
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 2,
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Order #${order['id']}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _errorMessage.isNotEmpty
+                ? Center(child: Text(_errorMessage))
+                : _orders.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: _orders.length,
+                        itemBuilder: (context, index) {
+                          final order = _orders[index];
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text('Total: ${order['grand_total']}'),
-                          Text('Alamat: ${order['address']['full_address']}'),
-                          Text(
-                              'Metode Pengiriman: ${order['shipping_method']['name']}'),
-                          Text('Tanggal Order: ${order['created_at']}'),
-                        ],
+                            elevation: 2,
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Order #${order['id']}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text('Total: ${order['grand_total']}'),
+                                  Text('Alamat: ${order['address']['full_address']}'),
+                                  Text('Tanggal Order: ${order['created_at']}'),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : const Center(
+                        child: Text(
+                          'Tidak ada riwayat checkout yang tersedia.',
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ),
-                    ),
-                  );
-                },
-              )
-            : const Center(
-                child: Text(
-                  'Tidak ada riwayat checkout yang tersedia.',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
       ),
     );
   }
