@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/module/profile/add_bio.dart';
+import 'package:gadget_port_mobile/module/profile/checkout_history.dart';
+import 'package:gadget_port_mobile/module/profile/edit_bio.dart';
+import 'package:gadget_port_mobile/module/profile/edit_profile.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/../widgets/bottom_nav_bar.dart';
 
@@ -70,13 +74,28 @@ class ProfileScreen extends StatelessWidget {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                    );
+                  },
                   child: const Text('Edit Profile'),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const BioApp()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: const Text('Add Bio'),
                 ),
               ],
@@ -100,10 +119,10 @@ class ProfileScreen extends StatelessWidget {
               mainAxisSpacing: 10,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                _buildQuickAccessButton('Dashboard'),
-                _buildQuickAccessButton('Products'),
-                _buildQuickAccessButton('Store'),
-                _buildQuickAccessButton('Cart'),
+                _buildQuickAccessButton(context, 'Dashboard', const CheckoutHistoryApp()),
+                _buildQuickAccessButton(context, 'Products', const EditBioApp()),
+                _buildQuickAccessButton(context, 'Store', const EditProfileApp()),
+                _buildQuickAccessButton(context, 'Cart', const BioApp()),
               ],
             ),
             const SizedBox(height: 20),
@@ -125,11 +144,16 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-Widget _buildQuickAccessButton(String label) {
+Widget _buildQuickAccessButton(BuildContext context, String label, Widget destination) {
   return ElevatedButton(
-    onPressed: () {},
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => destination),
+      );
+    },
     style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.blue,
+      primary: Colors.blue, // Corrected from backgroundColor to primary
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
