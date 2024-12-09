@@ -87,7 +87,7 @@
 import 'package:flutter/material.dart';
 import 'package:gadget_port_mobile/screens/cart_screen.dart';
 import 'package:gadget_port_mobile/screens/home_screen.dart';
-// import 'package:gadget_port_mobile/screens/profile_screen.dart';
+import 'package:gadget_port_mobile/screens/profile_screen.dart';
 // import 'package:gadget_port_mobile/screens/search_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -123,9 +123,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
       // case 1:
       //   targetScreen = const SearchScreen();
       //   break;
-      // case 2:
-      //   targetScreen = const ProfileScreen();
-      //   break;
+      case 2:
+        targetScreen = const ProfileScreen();
+        break;
       case 3:
         targetScreen = CartScreen(
           selectedIndex: index, 
