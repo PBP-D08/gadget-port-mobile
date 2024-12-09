@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final request = context.read<CookieRequest>();
     final response = await request.login(
-      "http://10.0.2.2:8000/signin/loginflutter/", // Sesuaikan URL dengan backend Anda
+      "http:///localhost:8000/signin/login_flutter/", // Sesuaikan URL dengan backend Anda
       {'username': username, 'password': password},
     );
 
@@ -85,11 +85,6 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 60, // Adjust the size of the logo
                               ),
                               const SizedBox(height: 25),
-                              const Text(
-                                "Welcome,",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 35),
-                              ),
                               Text(
                                 "Sign in to continue",
                                 style: TextStyle(

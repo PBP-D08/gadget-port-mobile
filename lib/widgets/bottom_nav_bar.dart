@@ -61,7 +61,7 @@
 //       currentIndex: selectedIndex,
 //       onTap: onItemTapped,
 //       selectedItemColor: Color.fromARGB(255, 52, 152, 219),  // Set your selected item color here
-//       unselectedItemColor: Color.fromARGB(255, 191, 219, 254), 
+//       unselectedItemColor: Color.fromARGB(255, 191, 219, 254),
 //       items: const [
 //         BottomNavigationBarItem(
 //           icon: Icon(Icons.home),
@@ -88,6 +88,8 @@ import 'package:flutter/material.dart';
 import 'package:gadget_port_mobile/screens/cart_screen.dart';
 import 'package:gadget_port_mobile/screens/home_screen.dart';
 import 'package:gadget_port_mobile/screens/profile_screen.dart';
+import 'package:gadget_port_mobile/screens/wishlist_screen.dart';
+// import 'package:gadget_port_mobile/screens/profile_screen.dart';
 // import 'package:gadget_port_mobile/screens/search_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -128,7 +130,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
         break;
       case 3:
         targetScreen = CartScreen(
-          selectedIndex: index, 
+          selectedIndex: index,
+          onItemTapped: _onItemTapped,
+        );
+        break;
+      case 4:
+        targetScreen = WishlistScreen(
+          selectedIndex: index,
           onItemTapped: _onItemTapped,
         );
         break;
@@ -178,6 +186,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
         BottomNavigationBarItem(
           icon: Icon(Icons.shopping_cart),
           label: 'Cart',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.favorite),
+          label: 'Wishlist',
         ),
       ],
     );
