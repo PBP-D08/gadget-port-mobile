@@ -90,6 +90,7 @@ import 'package:gadget_port_mobile/screens/home_screen.dart';
 import 'package:gadget_port_mobile/screens/profile/profile_screen.dart';
 import 'package:gadget_port_mobile/screens/review/review_page.dart';
 import 'package:gadget_port_mobile/screens/wishlist/wishlist_screen.dart';
+import 'package:gadget_port_mobile/screens/store/store_list_screen.dart';
 // import 'package:gadget_port_mobile/screens/profile_screen.dart';
 // import 'package:gadget_port_mobile/screens/search_screen.dart';
 
@@ -138,6 +139,9 @@ void _onItemTapped(int index) {
       break;
     case 4:
       targetScreen = const WishlistScreen();
+      break;
+    case 5:
+      targetScreen = const StoreListPage(); 
       break;
     default:
       targetScreen = const HomeScreen();
@@ -189,6 +193,10 @@ void _onItemTapped(int index) {
         BottomNavigationBarItem(
           icon: Icon(Icons.favorite),
           label: 'Wishlist',
+        ),
+         BottomNavigationBarItem(
+          icon: Icon(Icons.store),
+          label: 'Stores',
         ),
       ],
     );
