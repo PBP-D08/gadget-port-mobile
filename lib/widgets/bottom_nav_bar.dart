@@ -135,7 +135,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 4:
-        targetScreen = WishlistScreen();
+        targetScreen = const WishlistScreen();
         break;
       default:
         targetScreen = const HomeScreen();
