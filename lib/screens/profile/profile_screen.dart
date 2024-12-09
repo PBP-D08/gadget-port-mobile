@@ -4,7 +4,7 @@ import 'package:gadget_port_mobile/module/profile/checkout_history.dart';
 import 'package:gadget_port_mobile/module/profile/edit_bio.dart';
 import 'package:gadget_port_mobile/module/profile/edit_profile.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/bottom_nav_bar.dart';
+import '/../widgets/bottom_nav_bar.dart';
 
 void main() {
   runApp(const GadgetPortApp());
