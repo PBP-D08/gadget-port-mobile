@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart'; // Pastikan provider sudah di-setup
-import 'package:gadget_port_mobile/screens/home_screen.dart'; // Ubah sesuai dengan rute halaman utama
+import 'package:provider/provider.dart'; 
+import 'package:gadget_port_mobile/screens/home_screen.dart';
 
 class GetStartedButton extends StatefulWidget {
   final Function onTap;
@@ -37,7 +37,7 @@ class _GetStartedButtonState extends State<GetStartedButton> {
     final request = context.read<CookieRequest>();
 
     final response = await request.login(
-      "http://10.0.2.2:8000/signin/loginflutter/", // Gunakan IP emulator Android
+      "http:///localhost:8000/signin/login_flutter/", // Gunakan IP emulator Android
       {'username': username, 'password': password},
     );
 
