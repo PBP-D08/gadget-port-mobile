@@ -5,6 +5,8 @@ import 'package:gadget_port_mobile/module/profile/edit_bio.dart';
 import 'package:gadget_port_mobile/module/profile/edit_profile.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/../widgets/bottom_nav_bar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const GadgetPortApp());
@@ -30,8 +32,59 @@ class GadgetPortApp extends StatelessWidget {
   }
 }
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String fullName = 'Loading...';
+  String email = 'Loading...';
+  String address = 'Loading...';
+  String bio = '';  // Menambahkan field untuk bio
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfileData();
+  }
+
+  Future<void> _fetchProfileData() async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:8000/user/profile/view/json/'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      setState(() {
+        fullName = data['user__full_name'] ?? 'No Name';
+        email = data['user__email'] ?? 'No Email';
+        address = data['user__alamat'] ?? 'No Address';
+        bio = data['user__bio'] ?? '';  // Menyimpan bio
+      });
+    } else {
+      // Handle error if needed
+      setState(() {
+        fullName = 'Failed to load data';
+        email = 'Failed to load data';
+        address = 'Failed to load data';
+      });
+    }
+  }
+
+  Future<void> _deleteBio() async {
+    // Panggil API untuk menghapus bio
+    final response = await http.delete(Uri.parse('http://127.0.0.1:8000/user/profile/delete_bio/'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        bio = '';  // Hapus bio dari state setelah berhasil dihapus
+      });
+    } else {
+      // Tangani jika penghapusan gagal
+      print('Failed to delete bio');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,13 +116,13 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Profile:',
+              'Profile: ',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            const Text('Full Name: pertama'),
-            const Text('Email: pertama@gmail.com'),
-            const Text('Address:'),
+            Text('Full Name: $fullName'),
+            Text('Email: $email'),
+            Text('Address: $address'),
             const SizedBox(height: 10),
             Row(
               children: [
@@ -102,10 +155,41 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Bio:',
+              'Bio: ',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const Text('No bio available. Add one!'),
+            bio.isEmpty
+                ? const Text('No bio available. Add one!')
+                : Column(
+                    children: [
+                      Text(bio),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const EditBioApp()),
+                              );
+                            },
+                            child: const Text('Edit Bio'),
+                          ),
+                          const SizedBox(width: 10),
+                          ElevatedButton(
+                            onPressed: _deleteBio,
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red, // Warna merah untuk tombol delete
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: const Text('Delete Bio'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
             const SizedBox(height: 20),
             const Text(
               'Quick Access',
@@ -153,7 +237,7 @@ Widget _buildQuickAccessButton(BuildContext context, String label, Widget destin
       );
     },
     style: ElevatedButton.styleFrom(
-      primary: Colors.blue, // Corrected from backgroundColor to primary
+      primary: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),

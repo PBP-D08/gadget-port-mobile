@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const EditProfileApp());
@@ -14,7 +16,7 @@ class EditProfileApp extends StatelessWidget {
       title: 'Edit Profile',
       theme: ThemeData(
         primaryColor: const Color.fromARGB(255, 191, 219, 254),
-        scaffoldBackgroundColor: const Color.fromARGB(255, 241, 247, 255), // Gray-100 background
+        scaffoldBackgroundColor: const Color.fromARGB(255, 241, 247, 255),
       ),
       home: const EditProfileScreen(),
     );
@@ -31,24 +33,92 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Example controllers for each field
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  String _selectedOption = 'Option 1'; // Example dropdown selection
+  final TextEditingController _alamatController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfile(); // Call GET request during initialization
+  }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _usernameController.dispose();
+    _fullnameController.dispose();
     _emailController.dispose();
+    _alamatController.dispose();
+    _bioController.dispose();
     super.dispose();
   }
 
-  void _saveChanges() {
-    if (_formKey.currentState?.validate() ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile saved successfully!')),
-      );
+  Future<void> _fetchProfile() async {
+    const url = 'http://127.0.0.1:8000/user/profile/edit/json'; // Adjust the endpoint
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body)[0]; // Assuming you're fetching a single profile
+        setState(() {
+          _usernameController.text = data['user__username'];
+          _fullnameController.text = data['user__full_name'];
+          _emailController.text = data['user__email'];
+          _alamatController.text = data['user__alamat'];
+          _bioController.text = data['user__bio'] ?? '';
+        });
+      } else {
+        _showErrorSnackBar('Failed to load profile.');
+      }
+    } catch (e) {
+      _showErrorSnackBar('Error fetching profile: $e');
     }
+  }
+
+  Future<void> _saveProfile() async {
+    const url = 'http://127.0.0.1:8000/user/profile/edit'; // Adjust the endpoint
+    final body = json.encode({
+      'user__username': _usernameController.text,
+      'user__full_name': _fullnameController.text,
+      'user__email': _emailController.text,
+      'user__alamat': _alamatController.text,
+      'user__bio': _bioController.text,
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        _showSuccessSnackBar('Profile saved successfully!');
+      } else {
+        _showErrorSnackBar('Failed to save profile.');
+      }
+    } catch (e) {
+      _showErrorSnackBar('Error saving profile: $e');
+    }
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   @override
@@ -88,9 +158,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
-                    controller: _nameController,
-                    label: 'Name',
-                    placeholder: 'Enter your name',
+                    controller: _usernameController,
+                    label: 'Username',
+                    placeholder: 'Enter your username',
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _fullnameController,
+                    label: 'Full Name',
+                    placeholder: 'Enter your full name',
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
@@ -100,10 +176,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 20),
-                  _buildDropdownField(),
+                  _buildTextField(
+                    controller: _alamatController,
+                    label: 'Address',
+                    placeholder: 'Enter your address',
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _bioController,
+                    label: 'Bio',
+                    placeholder: 'Enter your bio',
+                  ),
                   const SizedBox(height: 20),
                   TextButton(
-                    onPressed: _saveChanges,
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        _saveProfile(); // Call POST request on save
+                      }
+                    },
                     style: TextButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 191, 219, 254),
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -168,49 +258,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               return '$label cannot be empty.';
             }
             return null;
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDropdownField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select Option',
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          value: _selectedOption,
-          items: ['Option 1', 'Option 2', 'Option 3']
-              .map((option) => DropdownMenuItem(
-                    value: option,
-                    child: Text(option),
-                  ))
-              .toList(),
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 191, 219, 254),
-                width: 2,
-              ),
-            ),
-          ),
-          onChanged: (value) {
-            setState(() {
-              _selectedOption = value!;
-            });
           },
         ),
       ],
