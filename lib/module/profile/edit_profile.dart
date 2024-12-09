@@ -33,9 +33,11 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  String _selectedOption = 'Option 1';
+  final TextEditingController _alamatController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
 
   @override
   void initState() {
@@ -45,21 +47,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _usernameController.dispose();
+    _fullnameController.dispose();
     _emailController.dispose();
+    _alamatController.dispose();
+    _bioController.dispose();
     super.dispose();
   }
 
   Future<void> _fetchProfile() async {
-    const url = 'http://127.0.0.1:8000/profile'; // Adjust the endpoint
+    const url = 'http://127.0.0.1:8000/user/profile/json'; // Adjust the endpoint
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = json.decode(response.body)[0]; // Assuming you're fetching a single profile
         setState(() {
-          _nameController.text = data['name'];
-          _emailController.text = data['email'];
-          _selectedOption = data['option'];
+          _usernameController.text = data['user__username'];
+          _fullnameController.text = data['user__full_name'];
+          _emailController.text = data['user__email'];
+          _alamatController.text = data['user__alamat'];
+          _bioController.text = data['user__bio'] ?? '';
         });
       } else {
         _showErrorSnackBar('Failed to load profile.');
@@ -70,11 +77,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _saveProfile() async {
-    const url = 'http://127.0.0.1:8000/profile'; // Adjust the endpoint
+    const url = 'http://127.0.0.1:8000/user/profile'; // Adjust the endpoint
     final body = json.encode({
-      'name': _nameController.text,
-      'email': _emailController.text,
-      'option': _selectedOption,
+      'user__username': _usernameController.text,
+      'user__full_name': _fullnameController.text,
+      'user__email': _emailController.text,
+      'user__alamat': _alamatController.text,
+      'user__bio': _bioController.text,
     });
 
     try {
@@ -149,9 +158,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
-                    controller: _nameController,
-                    label: 'Name',
-                    placeholder: 'Enter your name',
+                    controller: _usernameController,
+                    label: 'Username',
+                    placeholder: 'Enter your username',
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _fullnameController,
+                    label: 'Full Name',
+                    placeholder: 'Enter your full name',
                   ),
                   const SizedBox(height: 20),
                   _buildTextField(
@@ -161,7 +176,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 20),
-                  _buildDropdownField(),
+                  _buildTextField(
+                    controller: _alamatController,
+                    label: 'Address',
+                    placeholder: 'Enter your address',
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _bioController,
+                    label: 'Bio',
+                    placeholder: 'Enter your bio',
+                  ),
                   const SizedBox(height: 20),
                   TextButton(
                     onPressed: () {
@@ -233,49 +258,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               return '$label cannot be empty.';
             }
             return null;
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDropdownField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Select Option',
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          value: _selectedOption,
-          items: ['Option 1', 'Option 2', 'Option 3']
-              .map((option) => DropdownMenuItem(
-                    value: option,
-                    child: Text(option),
-                  ))
-              .toList(),
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 191, 219, 254),
-                width: 2,
-              ),
-            ),
-          ),
-          onChanged: (value) {
-            setState(() {
-              _selectedOption = value!;
-            });
           },
         ),
       ],

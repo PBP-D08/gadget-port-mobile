@@ -43,6 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String fullName = 'Loading...';
   String email = 'Loading...';
   String address = 'Loading...';
+  String bio = '';  // Menambahkan field untuk bio
 
   @override
   void initState() {
@@ -51,14 +52,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _fetchProfileData() async {
-    final response = await http.get(Uri.parse('https://yourapi.com/profile'));
+    final response = await http.get(Uri.parse('http://127.0.0.1:8000/user/profile/json/'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       setState(() {
-        fullName = data['name'] ?? 'No Name';
-        email = data['email'] ?? 'No Email';
-        address = data['address'] ?? 'No Address';
+        fullName = data['user__full_name'] ?? 'No Name';
+        email = data['user__email'] ?? 'No Email';
+        address = data['user__alamat'] ?? 'No Address';
+        bio = data['user__bio'] ?? '';  // Menyimpan bio
       });
     } else {
       // Handle error if needed
@@ -67,6 +69,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         email = 'Failed to load data';
         address = 'Failed to load data';
       });
+    }
+  }
+
+  Future<void> _deleteBio() async {
+    // Panggil API untuk menghapus bio
+    final response = await http.delete(Uri.parse('http://127.0.0.1:8000/user/bio/delete/'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        bio = '';  // Hapus bio dari state setelah berhasil dihapus
+      });
+    } else {
+      // Tangani jika penghapusan gagal
+      print('Failed to delete bio');
     }
   }
 
@@ -100,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Profile:',
+              'Profile: ',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
@@ -139,10 +155,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Bio:',
+              'Bio: ',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const Text('No bio available. Add one!'),
+            bio.isEmpty
+                ? const Text('No bio available. Add one!')
+                : Column(
+                    children: [
+                      Text(bio),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const EditBioApp()),
+                              );
+                            },
+                            child: const Text('Edit Bio'),
+                          ),
+                          const SizedBox(width: 10),
+                          ElevatedButton(
+                            onPressed: _deleteBio,
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red, // Warna merah untuk tombol delete
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: const Text('Delete Bio'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
             const SizedBox(height: 20),
             const Text(
               'Quick Access',
@@ -190,7 +237,7 @@ Widget _buildQuickAccessButton(BuildContext context, String label, Widget destin
       );
     },
     style: ElevatedButton.styleFrom(
-      primary: Colors.blue, // Corrected from backgroundColor to primary
+      primary: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),

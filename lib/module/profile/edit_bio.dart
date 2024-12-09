@@ -48,13 +48,13 @@ class _EditBioScreenState extends State<EditBioScreen> {
   }
 
   Future<void> _fetchBio() async {
-    const String url = 'https://example.com/api/user/bio'; // Ganti dengan URL API Anda
+    const String url = 'http://127.0.0.1:8000/user/profile/json'; // Ganti dengan URL API Anda
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          _bioController.text = data['bio'] ?? 'Bio belum diatur';
+          _bioController.text = data['user__bio'] ?? 'Bio belum diatur';
           _isLoading = false;
         });
       } else {
@@ -70,12 +70,12 @@ class _EditBioScreenState extends State<EditBioScreen> {
   }
 
   Future<void> _saveBio() async {
-    const String url = 'https://example.com/api/user/bio'; // Ganti dengan URL API Anda
+    const String url = 'http://127.0.0.1:8000/user/profile/'; // Ganti dengan URL API Anda
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'bio': _bioController.text}),
+        body: json.encode({'user__bio': _bioController.text}),
       );
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
