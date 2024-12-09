@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 class WishlistScreen extends StatelessWidget {
-  final int selectedIndex;
-  final Function(int) onItemTapped;
-
-  const WishlistScreen(
-      {super.key, this.selectedIndex = 0, required this.onItemTapped});
+  const WishlistScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

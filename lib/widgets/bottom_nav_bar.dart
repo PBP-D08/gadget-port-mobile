@@ -135,10 +135,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 4:
-        targetScreen = WishlistScreen(
-          selectedIndex: index,
-          onItemTapped: _onItemTapped,
-        );
+        targetScreen = WishlistScreen();
         break;
       default:
         targetScreen = const HomeScreen();
