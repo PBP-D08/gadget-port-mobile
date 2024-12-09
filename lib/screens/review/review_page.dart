@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/screens/review/add_review.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -89,6 +90,7 @@ import '/../themes/app_theme.dart';
 //   }
 // }
 
+import 'package:flutter/material.dart';
 
 class ReviewPage extends StatefulWidget {
   const ReviewPage({super.key});
@@ -203,14 +205,45 @@ class _ReviewPageState extends State<ReviewPage> {
                         ),
                       ),
                       const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0, vertical: 12.0),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AddReviewPage()),
+                            );
+                          },
+                          child: ListTile(
+                            leading: const Icon(Icons.add, color: Colors.black),
+                            title: const Text('Add Review',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const AddReviewPage()),
+                              );
+                            },
+                            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                          ),
+                        ),
+                      ),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: EdgeInsets.only(bottom: 16.0),
                           child: Text('Recent Reviews',
                               style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold)),
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                       ),
                       Column(
