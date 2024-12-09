@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const BioApp());
@@ -47,12 +49,34 @@ class _BioScreenState extends State<BioScreen> {
     super.dispose();
   }
 
-  void _saveBio() {
+  Future<void> _saveBio() async {
     if (_formKey.currentState?.validate() ?? false) {
       final bio = _bioController.text;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bio saved: $bio')),
-      );
+      const String apiUrl = "https://your-api.com/api/save-bio/";
+
+      try {
+        final response = await http.post(
+          Uri.parse(apiUrl),
+          headers: {"Content-Type": "application/json"},
+          body: json.encode({"bio": bio}),
+        );
+
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Bio saved successfully!')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to save bio. Status code: ${response.statusCode}'),
+            ),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('An error occurred: $e')),
+        );
+      }
     }
   }
 
@@ -133,7 +157,7 @@ class _BioScreenState extends State<BioScreen> {
                       TextButton(
                         onPressed: _saveBio,
                         style: TextButton.styleFrom(
-                          backgroundColor: const Color(0xFF6499E9), // Fixed
+                          backgroundColor: const Color(0xFF6499E9),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

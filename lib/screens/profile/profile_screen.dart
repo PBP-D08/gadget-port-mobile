@@ -5,6 +5,8 @@ import 'package:gadget_port_mobile/module/profile/edit_bio.dart';
 import 'package:gadget_port_mobile/module/profile/edit_profile.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/../widgets/bottom_nav_bar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const GadgetPortApp());
@@ -30,8 +32,43 @@ class GadgetPortApp extends StatelessWidget {
   }
 }
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String fullName = 'Loading...';
+  String email = 'Loading...';
+  String address = 'Loading...';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfileData();
+  }
+
+  Future<void> _fetchProfileData() async {
+    final response = await http.get(Uri.parse('https://yourapi.com/profile'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      setState(() {
+        fullName = data['name'] ?? 'No Name';
+        email = data['email'] ?? 'No Email';
+        address = data['address'] ?? 'No Address';
+      });
+    } else {
+      // Handle error if needed
+      setState(() {
+        fullName = 'Failed to load data';
+        email = 'Failed to load data';
+        address = 'Failed to load data';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +104,9 @@ class ProfileScreen extends StatelessWidget {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            const Text('Full Name: pertama'),
-            const Text('Email: pertama@gmail.com'),
-            const Text('Address:'),
+            Text('Full Name: $fullName'),
+            Text('Email: $email'),
+            Text('Address: $address'),
             const SizedBox(height: 10),
             Row(
               children: [
