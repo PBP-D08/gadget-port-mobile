@@ -23,8 +23,8 @@ class GadgetPort extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Gadget Port',
         theme: AppTheme.lightTheme,
-        // home: const LoginPage(),
-        home: const HomeScreen()
+        home: const LoginPage(),
+        // home: const HomeScreen()
 
       ),
     );
