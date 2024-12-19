@@ -28,6 +28,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
+          primary: Colors.blue,
           backgroundColor: const Color(0xFF00ADB5), // Button background color
         ),
       ),

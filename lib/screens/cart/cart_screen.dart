@@ -266,6 +266,7 @@ class CartScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
+                      primary: Colors.blue,
                       backgroundColor: theme.primaryColor,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,

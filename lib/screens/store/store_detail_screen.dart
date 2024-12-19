@@ -314,6 +314,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                       },
                       child: Text('View'),
                       style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
                         minimumSize: Size(60, 30),
                         padding: EdgeInsets.symmetric(horizontal: 8),
                       ),

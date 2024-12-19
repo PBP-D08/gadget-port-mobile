@@ -177,11 +177,11 @@ class _EditBioScreenState extends State<EditBioScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromARGB(255, 191, 219, 254),
+                                primary: Colors.blue,
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
-                                ),
+                                ), 
                               ),
                               child: const Text(
                                 'Simpan Perubahan',

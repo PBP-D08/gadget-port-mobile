@@ -209,6 +209,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
+                            primary: Colors.blue,
                             backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),

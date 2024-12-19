@@ -175,7 +175,7 @@ class _StoreListPageState extends State<StoreListPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[50],
+                        primary: Colors.grey,
                         foregroundColor: Colors.blue[600],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -279,7 +279,7 @@ class _AddStoreModalState extends State<AddStoreModal> {
                 ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[600],
+                    primary: Colors.blue,
                     padding: EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

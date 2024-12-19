@@ -103,6 +103,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                     print('Recommend: $_wouldRecommend');
                   },
                   style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
                     backgroundColor: const Color.fromARGB(255, 191, 219, 254),
                     minimumSize: const Size(double.infinity, 50),
                   ),
