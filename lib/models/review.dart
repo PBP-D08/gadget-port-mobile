@@ -4,64 +4,74 @@
 
 import 'dart:convert';
 
-List<Review> reviewFromJson(String str) =>
-    List<Review>.from(json.decode(str).map((x) => Review.fromJson(x)));
+List<Review> reviewFromJson(String str) => List<Review>.from(json.decode(str).map((x) => Review.fromJson(x)));
 
-String reviewToJson(List<Review> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String reviewToJson(List<Review> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Review {
-  String model;
-  int pk;
-  Fields fields;
+    int id;
+    Fields fields;
+    User user;
 
-  Review({
-    required this.model,
-    required this.pk,
-    required this.fields,
-  });
+    Review({
+        required this.id,
+        required this.fields,
+        required this.user,
+    });
 
-  factory Review.fromJson(Map<String, dynamic> json) => Review(
-        model: json["model"],
-        pk: json["pk"],
+    factory Review.fromJson(Map<String, dynamic> json) => Review(
+        id: json["id"],
         fields: Fields.fromJson(json["fields"]),
-      );
+        user: User.fromJson(json["user"]),
+    );
 
-  Map<String, dynamic> toJson() => {
-        "model": model,
-        "pk": pk,
+    Map<String, dynamic> toJson() => {
+        "id": id,
         "fields": fields.toJson(),
-      };
+        "user": user.toJson(),
+    };
 }
 
 class Fields {
-  int user;
-  String reviewText;
-  int rating;
-  int product;
-  DateTime timestamp;
+    int rating;
+    String reviewText;
+    DateTime timestamp;
 
-  Fields({
-    required this.user,
-    required this.reviewText,
-    required this.rating,
-    required this.product,
-    required this.timestamp,
-  });
+    Fields({
+        required this.rating,
+        required this.reviewText,
+        required this.timestamp,
+    });
 
-  factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-        user: json["user"],
-        reviewText: json["review_text"],
+    factory Fields.fromJson(Map<String, dynamic> json) => Fields(
         rating: json["rating"],
-        product: json["product"],
+        reviewText: json["review_text"],
         timestamp: DateTime.parse(json["timestamp"]),
-      );
+    );
 
-  Map<String, dynamic> toJson() => {
-        "user": user,
-        "review_text": reviewText,
+    Map<String, dynamic> toJson() => {
         "rating": rating,
-        "product": product,
+        "review_text": reviewText,
         "timestamp": timestamp.toIso8601String(),
-      };
+    };
+}
+
+class User {
+    String username;
+    int id;
+
+    User({
+        required this.username,
+        required this.id,
+    });
+
+    factory User.fromJson(Map<String, dynamic> json) => User(
+        username: json["username"],
+        id: json["id"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "username": username,
+        "id": id,
+    };
 }

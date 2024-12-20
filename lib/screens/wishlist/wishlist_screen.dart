@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class WishlistScreen extends StatelessWidget {
-  const WishlistScreen({super.key});
+  const WishlistScreen({super.key, required int selectedIndex});
 
   @override
   Widget build(BuildContext context) {
