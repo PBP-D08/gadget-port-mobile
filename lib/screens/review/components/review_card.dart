@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/screens/review/edit_review.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class ReviewCard extends StatelessWidget {
   final String reviewText;
-  final String username; // Menggunakan username
+  final String username;
   final String timestamp;
   final int rating;
-  final int reviewId; // Menambahkan ID review
-  final String currentUser; // Menambahkan username pengguna saat ini
-  final VoidCallback onDelete; // Callback untuk memperbarui tampilan setelah penghapusan
+  final int reviewId;
+  final String currentUser;
+  final VoidCallback onDelete;
+  final VoidCallback onRefresh;  // Tambahkan parameter ini
 
   const ReviewCard({
     Key? key,
@@ -18,9 +19,10 @@ class ReviewCard extends StatelessWidget {
     required this.username,
     required this.timestamp,
     required this.rating,
-    required this.reviewId, // Menambahkan parameter reviewId
-    required this.currentUser, // Menambahkan parameter currentUser
-    required this.onDelete, // Callback untuk memperbarui tampilan
+    required this.reviewId,
+    required this.currentUser,
+    required this.onDelete,
+    required this.onRefresh,  // Tambahkan ini ke constructor
   }) : super(key: key);
 
   String formatTimestamp() {
@@ -33,19 +35,19 @@ class ReviewCard extends StatelessWidget {
   }
 
   Future<void> deleteReview(BuildContext context) async {
-    final url = 'http://localhost:8000/review/delete-flutter/$reviewId/'; // Ganti dengan URL API Anda
+    final url = 'http://localhost:8000/review/delete-flutter/$reviewId/';
     final response = await http.delete(Uri.parse(url), headers: {
       'Content-Type': 'application/json',
     });
-    print(response);
+
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Review deleted successfully")),
       );
-      onDelete(); // Panggil callback untuk memperbarui tampilan
+      onDelete();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to delete review: ${response}")),
+        SnackBar(content: Text("Failed to delete review: ${response.body}")),
       );
     }
   }
@@ -84,13 +86,55 @@ class ReviewCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      username, // Menggunakan username langsung
+                      username,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      formatTimestamp(), // Menggunakan method formatTimestamp()
+                      formatTimestamp(),
                       style: const TextStyle(color: Colors.grey, fontSize: 12),
                     ),
+                    
+                    if (username == currentUser)
+                      PopupMenuButton<String>(
+                        onSelected: (String value) async {
+                          if (value == 'edit') {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditReviewPage(reviewId: reviewId),
+                              ),
+                            );
+                              // Jika hasil edit sukses, refresh reviews
+                            if (result == true) {
+                              onRefresh();  // Panggil callback untuk refresh
+                            }
+                          } else if (value == 'delete') {
+                            deleteReview(context);
+                          }
+                        },
+                        itemBuilder: (BuildContext context) => [
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, color: Colors.blue),
+                                SizedBox(width: 8),
+                                Text('Edit'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, color: Colors.red),
+                                SizedBox(width: 8),
+                                Text('Delete'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -100,7 +144,7 @@ class ReviewCard extends StatelessWidget {
                     (index) => Icon(
                       Icons.star,
                       color: index < rating ? Colors.yellow : Colors.grey,
-                      size: 20, // Menambahkan ukuran ikon yang lebih kecil
+                      size: 20,
                     ),
                   ),
                 ),
@@ -111,14 +155,6 @@ class ReviewCard extends StatelessWidget {
                     color: Colors.grey,
                   ),
                 ),
-                const SizedBox(height: 8),
-                if (username == currentUser) // Hanya tampilkan jika pengguna adalah pemilik review
-                  IconButton(
-                    icon: const Icon(Icons.delete_forever, color: Colors.red),
-                    onPressed: () {
-                      deleteReview(context);
-                    },
-                  ),
               ],
             ),
           ),

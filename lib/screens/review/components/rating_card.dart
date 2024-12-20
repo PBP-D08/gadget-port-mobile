@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 const double defaultPadding = 16.0;
 const double defaultBorderRadious = 8.0;
 const Color warningColor = Colors.amber; // Ganti dengan warna yang sesuai

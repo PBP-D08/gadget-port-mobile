@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:gadget_port_mobile/models/review.dart';
 import '/../widgets/bottom_nav_bar.dart';
-import '/../themes/app_theme.dart';
 import 'components/review_card.dart';
 import 'package:gadget_port_mobile/models/user.dart'; // Pastikan Anda mengimpor model User
 
@@ -20,17 +19,17 @@ class ReviewPage extends StatefulWidget {
 }
 
 class _ReviewPageState extends State<ReviewPage> {
+  // Future<List<Review>>? reviewsFuture;
   late Future<List<Review>> reviews;
   late String currentUser ; // Menambahkan variabel untuk menyimpan username pengguna saat ini
-
   @override
   void initState() {
     super.initState();
     reviews = fetchReviews(widget.productId); // Panggil fetchReviews() dengan productId
-    currentUser = UserInfo.data['username'] ?? 'farid22';
+    // currentUser = UserInfo.data['username'] ?? 'farid22';
 
     // debugPrint("UserInfo.data: ${UserInfo.data}");
-    // currentUser = UserInfo.data["username"] ?? "Guest";
+    currentUser = UserInfo.data["username"] ?? "Guest";
     debugPrint("Current User: ${currentUser}");
     // currentUser  = UserInfo.data["username"]; // Ambil username pengguna saat ini
     print("WOIIIIIIIIII" + currentUser);
@@ -52,6 +51,25 @@ class _ReviewPageState extends State<ReviewPage> {
       return [];
     }
   }
+    Future<void> _navigateToAddReviewPage(int productId) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddReviewPage(productId: productId),
+      ),
+    );
+
+    if (result == true) {
+      refreshReviews(); // Panggil fungsi untuk memperbarui daftar review
+    }
+  }
+
+ void refreshReviews() {
+    setState(() {
+      reviews = fetchReviews(widget.productId); // Method yang mengambil data review dari API
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -112,13 +130,16 @@ class _ReviewPageState extends State<ReviewPage> {
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                           ),
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AddReviewPage(productId: widget.productId), // Kirimkan productId yang benar
+                                builder: (context) => AddReviewPage(productId: widget.productId),
                               ),
                             );
+                            if (result == true) {
+                              refreshReviews();  // Memanggil refresh jika add review berhasil
+                            }
                           },
                           child: const ListTile(
                             leading: Icon(Icons.add, color: Colors.black),
@@ -208,7 +229,9 @@ class _ReviewPageState extends State<ReviewPage> {
                             timestamp: review.fields.timestamp.toIso8601String(),
                             rating: review.fields.rating,
                             reviewId: review.id, // Kirimkan ID review
-                            currentUser: currentUser, // Kirimkan username pengguna saat ini
+                            currentUser: currentUser,
+                            // currentUser: "farid22", // Kirimkan username pengguna saat ini
+                            onRefresh: refreshReviews, 
                             onDelete: () {
                               setState(() {
                                 reviews = fetchReviews(widget.productId); // Muat ulang data review

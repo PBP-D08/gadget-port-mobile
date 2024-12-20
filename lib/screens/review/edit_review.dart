@@ -1,55 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:gadget_port_mobile/main.dart';
 import 'dart:convert';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
-class AddReviewPage extends StatefulWidget {
-  final int productId; // Menambahkan parameter productId
+class EditReviewPage extends StatefulWidget {
+  final int reviewId;
 
-  const AddReviewPage({super.key, required this.productId});
+  const EditReviewPage({super.key, required this.reviewId});
 
   @override
-  State<AddReviewPage> createState() => _AddReviewPageState();
+  State<EditReviewPage> createState() => _EditReviewPageState();
 }
 
-class _AddReviewPageState extends State<AddReviewPage> {
-  final _formKey = GlobalKey<FormState>(); // Menambahkan GlobalKey untuk form
-  int? _rating; // Mengubah rating menjadi int?
+class _EditReviewPageState extends State<EditReviewPage> {
+  final _formKey = GlobalKey<FormState>();
+  int? _rating;
   bool _wouldRecommend = false;
-  String _reviewMessage = ""; // Mengubah reviewMessage menjadi string4
+  String _reviewMessage = "";
 
-  Future<void> _submitReview() async {
-    final request = context.read<CookieRequest>(); // Mengambil CookieRequest dari provider
+  Future<void> _fetchReviewData() async {
+    final request = context.read<CookieRequest>();
+
+    try {
+      final response = await request.get("http://localhost:8000/review/edit/${widget.reviewId}/");
+      print(response);
+      if (response['status'] == 'success') {
+        setState(() {
+          _rating = int.tryParse(response['data']['rating'] ?? '0');
+          _reviewMessage = response['data']['review_message'] ?? '';
+          _wouldRecommend = response['data']['would_recommend'] == 'true';
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to fetch review data.")),
+        );
+      }
+    } catch (e) {
+      print('Error fetching review: $e');
+    }
+  }
+Future<void> _submitEditedReview() async {
+    // Ubah dari watch menjadi read
+    final request = context.read<CookieRequest>();
 
     if (_formKey.currentState!.validate()) {
       try {
-        // Mengambil data pengguna dari provider
-        String username = UserInfo.data["username"] ?? "default_username"; // Ganti dengan username default jika null
-        print("CBA" + username);
-        // Pastikan review message tidak kosong
-        if (_reviewMessage.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Review message cannot be empty.")),
-          );
-          return; // Hentikan eksekusi jika review message kosong
-        }
-
-        // Pastikan productId tidak null
-        if (widget.productId == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Product ID cannot be null.")),
-          );
-          return; // Hentikan eksekusi jika productId null
-        }
-
         final response = await request.postJson(
-          "http://localhost:8000/review/add/${widget.productId}/",
-          jsonEncode(<String, String>{
-            'username': username,
-            'rating': _rating.toString(), // Kirim rating sebagai string
+          "http://localhost:8000/review/edit/${widget.reviewId}/",
+          jsonEncode(<String, dynamic>{
+            'rating': _rating.toString(),
             'review_message': _reviewMessage,
-            'id': widget.productId.toString(), // Pastikan id dikirim sebagai string
+            'would_recommend': _wouldRecommend.toString(),
           }),
         );
 
@@ -57,25 +58,27 @@ class _AddReviewPageState extends State<AddReviewPage> {
           if (response['status'] == 'success') {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text("Your review has been published!"),
+                content: Text("Your review has been updated!"),
                 backgroundColor: Color.fromARGB(255, 100, 153, 233),
               ),
             );
-            // Kembalikan status refresh ke halaman sebelumnya
-            Navigator.pop(context, true); // Kirimkan true jika berhasil
+            Navigator.pop(context, true);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Terdapat kesalahan, silakan coba lagi."),
-              ),
+              const SnackBar(content: Text("Failed to update review. Please try again.")),
             );
           }
         }
-
       } catch (e) {
         print('Error: $e');
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchReviewData();
   }
 
   @override
@@ -91,21 +94,21 @@ class _AddReviewPageState extends State<AddReviewPage> {
             Navigator.pop(context);
           },
         ),
-        title: const Text('Add Reviews', style: TextStyle(color: Colors.black)),
+        title: const Text('Edit Review', style: TextStyle(color: Colors.black)),
         centerTitle: true,
       ),
       backgroundColor: Colors.grey[100],
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey, // Menggunakan form key
+          key: _formKey,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Center(
                   child: const Text(
-                    'Your overall rating of this product',
+                    'Update your rating',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -116,7 +119,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                     return IconButton(
                       onPressed: () {
                         setState(() {
-                          _rating = index + 1; // Set rating as integer
+                          _rating = index + 1;
                         });
                       },
                       icon: Icon(
@@ -129,9 +132,10 @@ class _AddReviewPageState extends State<AddReviewPage> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  initialValue: _reviewMessage,
                   onChanged: (value) {
                     setState(() {
-                      _reviewMessage = value; // Update review message
+                      _reviewMessage = value;
                     });
                   },
                   maxLength: 3000,
@@ -167,9 +171,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _submitReview(); // Memanggil fungsi untuk mengirim review
-                    },
+                    onPressed: _submitEditedReview,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: const Color.fromARGB(255, 100, 153, 233),
                       backgroundColor: Colors.white,
@@ -177,10 +179,10 @@ class _AddReviewPageState extends State<AddReviewPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0), // Tinggi tombol diperbesar
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
                     ),
                     child: const Text(
-                      'Submit Review',
+                      'Save Changes',
                       style: TextStyle(color: Color.fromARGB(255, 100, 153, 233), fontWeight: FontWeight.bold),
                     ),
                   ),
