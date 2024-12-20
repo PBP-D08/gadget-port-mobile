@@ -9,6 +9,20 @@ void main() {
   runApp(const GadgetPort());
 }
 
+class UserInfo {
+  static bool loggedIn = false;
+  static Map<String, dynamic> data = {};
+
+  static void login(Map<String, dynamic> data) {
+    loggedIn = true;
+    UserInfo.data = data;
+  }
+
+  static void logout() {
+    loggedIn = false;
+    data = {};
+  }
+}
 class GadgetPort extends StatelessWidget {
   const GadgetPort({super.key});
 
@@ -23,10 +37,22 @@ class GadgetPort extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Gadget Port',
         theme: AppTheme.lightTheme,
-        // home: const LoginPage(),
-        home: const HomeScreen()
+        home: const LoginPage(),
+        // home: const HomeScreen()
 
       ),
     );
   }
 }
+
+
+// Method Buat Logout, mungkin taro di Profile
+
+
+// void logout() {
+//   UserInfo.logout();
+//   Navigator.pushReplacement(
+//     context,
+//     MaterialPageRoute(builder: (context) => const LoginPage()),
+//   );
+// }

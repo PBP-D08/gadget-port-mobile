@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/main.dart';
 import 'package:gadget_port_mobile/screens/review/add_review.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -7,93 +8,12 @@ import 'package:http/http.dart' as http;
 import 'package:gadget_port_mobile/models/review.dart';
 import '/../widgets/bottom_nav_bar.dart';
 import '/../themes/app_theme.dart';
-
-// class ReviewPage extends StatefulWidget {
-//   const ReviewPage({super.key});
-
-//   @override
-//   State<ReviewPage> createState() => _ReviewPageState();
-// }
-
-// class _ReviewPageState extends State<ReviewPage> {
-//   late Future<List<Review>> reviews;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     reviews = fetchReviews();
-//   }
-
-//   Future<List<Review>> fetchReviews() async {
-//     final response = await http.get(Uri.parse('http://localhost:8000/review/json')); // Replace with your backend endpoint
-
-//     if (response.statusCode == 200) {
-//       return reviewFromJson(response.body);
-//     } else {
-//       throw Exception('Failed to load reviews');
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Reviews'),
-//       ),
-//       body: FutureBuilder<List<Review>>(
-//         future: reviews,
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return const Center(child: CircularProgressIndicator());
-//           } else if (snapshot.hasError) {
-//             return Center(child: Text('Error: ${snapshot.error}'));
-//           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-//             return const Center(child: Text('No reviews available'));
-//           } else {
-//             return ListView.builder(
-//               itemCount: snapshot.data!.length,
-//               itemBuilder: (context, index) {
-//                 final review = snapshot.data![index];
-//                 return Card(
-//                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-//                   child: Padding(
-//                     padding: const EdgeInsets.all(16.0),
-//                     child: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Text(
-//                           'User ID: ${review.fields.user}',
-//                           style: const TextStyle(
-//                               fontWeight: FontWeight.bold, fontSize: 16),
-//                         ),
-//                         const SizedBox(height: 8),
-//                         Text(
-//                           'Review: ${review.fields.reviewText}',
-//                           style: const TextStyle(fontSize: 14),
-//                         ),
-//                         const SizedBox(height: 8),
-//                         Text('Rating: ${review.fields.rating}/5'),
-//                         const SizedBox(height: 8),
-//                         Text('Product ID: ${review.fields.product}'),
-//                         const SizedBox(height: 8),
-//                         Text('Timestamp: ${review.fields.timestamp}'),
-//                       ],
-//                     ),
-//                   ),
-//                 );
-//               },
-//             );
-//           }
-//         },
-//       ),
-//     );
-//   }
-// }
-
-import 'package:flutter/material.dart';
+import 'components/review_card.dart';
+import 'package:gadget_port_mobile/models/user.dart'; // Pastikan Anda mengimpor model User
 
 class ReviewPage extends StatefulWidget {
-  const ReviewPage({super.key});
+  final int productId; // Tambahkan property productId
+  const ReviewPage({super.key, required this.productId}); // Tambahkan productId ke konstruktor
 
   @override
   State<ReviewPage> createState() => _ReviewPageState();
@@ -101,49 +21,43 @@ class ReviewPage extends StatefulWidget {
 
 class _ReviewPageState extends State<ReviewPage> {
   late Future<List<Review>> reviews;
+  late String currentUser ; // Menambahkan variabel untuk menyimpan username pengguna saat ini
 
   @override
   void initState() {
     super.initState();
-    reviews = fetchReviews();
+    reviews = fetchReviews(widget.productId); // Panggil fetchReviews() dengan productId
+    currentUser = UserInfo.data['username'] ?? 'farid22';
+
+    // debugPrint("UserInfo.data: ${UserInfo.data}");
+    // currentUser = UserInfo.data["username"] ?? "Guest";
+    debugPrint("Current User: ${currentUser}");
+    // currentUser  = UserInfo.data["username"]; // Ambil username pengguna saat ini
+    print("WOIIIIIIIIII" + currentUser);
   }
 
-  Future<List<Review>> fetchReviews() async {
-    // Dummy data for testing purposes
-    final dummyData = [
-      {
-        "model": "review",
-        "pk": 1,
-        "fields": {
-          "user": 101,
-          "review_text": "Great product! Highly recommend it.",
-          "rating": 5,
-          "product": 1001,
-          "timestamp": "2024-12-04T12:34:56Z"
-        }
-      },
-      {
-        "model": "review",
-        "pk": 2,
-        "fields": {
-          "user": 102,
-          "review_text": "Good quality, but a bit expensive.",
-          "rating": 4,
-          "product": 1002,
-          "timestamp": "2024-12-03T10:20:30Z"
-        }
-      }
-    ];
+  Future<List<Review>> fetchReviews(int productId) async {
+    try {
+      final url = Uri.parse('http://localhost:8000/review/get-product-review-json/$productId/');
+      final response = await http.get(url);
 
-    await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
-    return reviewFromJson(json.encode(dummyData));
+      if (response.statusCode == 200) {
+        return reviewFromJson(response.body);
+      } else {
+        print('Error status code: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('Error fetching reviews: $e');
+      return [];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme, // Use the predefined light theme
+      theme: ThemeData.light(),
       home: Scaffold(
         backgroundColor: Colors.grey[100],
         appBar: AppBar(
@@ -167,7 +81,56 @@ class _ReviewPageState extends State<ReviewPage> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No reviews available'));
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(right: 16.0),
+                              child: Text(
+                                'Belum ada Review produk ini', // Teks yang ditampilkan
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddReviewPage(productId: widget.productId), // Kirimkan productId yang benar
+                              ),
+                            );
+                          },
+                          child: const ListTile(
+                            leading: Icon(Icons.add, color: Colors.black),
+                            title: Text('Add Review', style: TextStyle(fontWeight: FontWeight.bold)),
+                            trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             } else {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -182,7 +145,7 @@ class _ReviewPageState extends State<ReviewPage> {
                             Padding(
                               padding: const EdgeInsets.only(right: 16.0),
                               child: Text(
-                                '4.5', // Replace with dynamic average rating if available
+                                '4.5', // Ganti dengan rating rata-rata dinamis jika tersedia
                                 style: const TextStyle(fontSize: 48),
                               ),
                             ),
@@ -193,7 +156,7 @@ class _ReviewPageState extends State<ReviewPage> {
                                     5,
                                     (index) => Icon(
                                       Icons.star,
-                                      color: index < 4 ? Colors.yellow : Colors.grey, // Replace "4" with dynamic rating count
+                                      color: index < 4 ? Colors.yellow : Colors.grey, // Ganti "4" dengan jumlah rating dinamis
                                     ),
                                   ),
                                 ),
@@ -213,27 +176,20 @@ class _ReviewPageState extends State<ReviewPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0, vertical: 12.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                           ),
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const AddReviewPage()),
+                                builder: (context) => AddReviewPage(productId: widget.productId), // Kirimkan productId yang benar
+                              ),
                             );
                           },
-                          child: ListTile(
-                            leading: const Icon(Icons.add, color: Colors.black),
-                            title: const Text('Add Review',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const AddReviewPage()),
-                              );
-                            },
-                            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                          child: const ListTile(
+                            leading: Icon(Icons.add, color: Colors.black),
+                            title: Text('Add Review', style: TextStyle(fontWeight: FontWeight.bold)),
+                            trailing: Icon(Icons.chevron_right, color: Colors.grey),
                           ),
                         ),
                       ),
@@ -241,81 +197,23 @@ class _ReviewPageState extends State<ReviewPage> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: EdgeInsets.only(bottom: 16.0),
-                          child: Text('Recent Reviews',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                          child: Text('Recent Reviews', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                       ),
                       Column(
                         children: snapshot.data!.map((review) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8.0),
-                            padding: const EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 1,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
-                                )
-                              ],
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                const Icon(
-                                  Icons.account_circle,
-                                  size: 40,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            'User ${review.fields.user}',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            '${review.fields.timestamp}',
-                                            style: const TextStyle(
-                                                color: Colors.grey, fontSize: 12),
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: List.generate(
-                                          5,
-                                          (index) => Icon(
-                                            Icons.star,
-                                            color: index < review.fields.rating
-                                                ? Colors.yellow
-                                                : Colors.grey,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        review.fields.reviewText,
-                                        style: const TextStyle(
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                          return ReviewCard(
+                            reviewText: review.fields.reviewText,
+                            username: review.user.username, // Gunakan username dari user
+                            timestamp: review.fields.timestamp.toIso8601String(),
+                            rating: review.fields.rating,
+                            reviewId: review.id, // Kirimkan ID review
+                            currentUser: currentUser, // Kirimkan username pengguna saat ini
+                            onDelete: () {
+                              setState(() {
+                                reviews = fetchReviews(widget.productId); // Muat ulang data review
+                              });
+                            }, // Callback untuk memperbarui state
                           );
                         }).toList(),
                       )
@@ -326,7 +224,6 @@ class _ReviewPageState extends State<ReviewPage> {
             }
           },
         ),
-        bottomNavigationBar: const BottomNavBar(selectedIndex: 1),
       ),
     );
   }

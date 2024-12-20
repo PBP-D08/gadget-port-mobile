@@ -16,9 +16,9 @@ class BioApp extends StatelessWidget {
       title: 'Add/Edit Bio',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          backgroundColor: const Color.fromARGB(255, 191, 219, 254),
-        ),
+        // colorScheme: ColorScheme.fromSwatch().copyWith(
+        //   backgroundColor: const Color.fromARGB(255, 191, 219, 254),
+        // ),
       ),
       home: const BioScreen(),
     );

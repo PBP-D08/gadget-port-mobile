@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/main.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:gadget_port_mobile/auth/register.dart';
@@ -26,22 +27,35 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  Future<void> loginUser(String username, String password) async {
-    setState(() {
-      loadingBallAppear = true;
-    });
+Future<void> loginUser (String username, String password) async {
+setState(() {
+  loadingBallAppear = true;
+});
 
-    final request = context.read<CookieRequest>();
-    final response = await request.login(
-      "http:///localhost:8000/signin/login_flutter/", // Sesuaikan URL dengan backend Anda
-      {'username': username, 'password': password},
-    );
+final request = context.watch<CookieRequest>();
 
+  final response = await request.login(
+    "http://localhost:8000/signin/login_flutter/", // Ganti dengan IP yang sesuai
+    {'username': username, 'password': password},
+  );
+    print("RESPONES WOI" + response['username']);
+  await Future.delayed(const Duration(milliseconds: 1), () {
     setState(() {
       loadingBallAppear = false;
     });
 
     if (request.loggedIn) {
+      // Simpan informasi pengguna di UserInfo
+      Map<String, dynamic> data = {
+        "username": response["username"],
+      };
+      print("Data setelah login: ${data}");
+      UserInfo.login(data);
+      print("Data UserInfo setelah login: ${UserInfo.data}");
+
+      // print(UserInfo);
+      // print("CEKK" + UserInfo.data['username']);
+      print("zzzzzzzzzzz");
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("${response['message']} Selamat datang, ${response['username']}"),
         backgroundColor: Colors.green,
@@ -55,11 +69,13 @@ class _LoginPageState extends State<LoginPage> {
         content: Text(response['message'] ?? 'Login gagal. Silakan coba lagi.'),
         backgroundColor: Colors.red,
       ));
-    }
+    }}
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+     print("Data UserInfo setelah login: ${UserInfo.data}");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme, // Use the predefined light theme

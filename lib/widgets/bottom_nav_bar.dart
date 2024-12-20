@@ -125,8 +125,8 @@ void _onItemTapped(int index) {
       targetScreen = const HomeScreen();
       break;
     case 1:
-      // targetScreen = SearchScreen();
-      targetScreen = const ReviewPage(); // Pengen Nyoba doank hehe
+      // targetScreen = const SearchScreen();
+      targetScreen = const HomeScreen();
       break;
     case 2:
       targetScreen = const ProfileScreen();
@@ -138,7 +138,8 @@ void _onItemTapped(int index) {
       );
       break;
     case 4:
-      targetScreen = const WishlistScreen();
+      // targetScreen = const WishlistScreen();
+      targetScreen = const HomeScreen();
       break;
     case 5:
       targetScreen = const StoreListPage(); 

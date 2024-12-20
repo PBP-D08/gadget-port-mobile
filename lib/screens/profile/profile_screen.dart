@@ -144,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
+                    backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -179,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ElevatedButton(
                             onPressed: _deleteBio,
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.red, // Warna merah untuk tombol delete
+                              backgroundColor: Colors.red, // Warna merah untuk tombol delete
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -237,7 +237,7 @@ Widget _buildQuickAccessButton(BuildContext context, String label, Widget destin
       );
     },
     style: ElevatedButton.styleFrom(
-      primary: Colors.blue,
+      backgroundColor: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
