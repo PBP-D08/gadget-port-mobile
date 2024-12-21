@@ -26,13 +26,10 @@ class _ReviewPageState extends State<ReviewPage> {
   void initState() {
     super.initState();
     reviews = fetchReviews(widget.productId); // Panggil fetchReviews() dengan productId
-    // currentUser = UserInfo.data['username'] ?? 'farid22';
-
-    // debugPrint("UserInfo.data: ${UserInfo.data}");
     currentUser = UserInfo.data["username"] ?? "Guest";
+    print(UserInfo.data);
     debugPrint("Current User: ${currentUser}");
-    // currentUser  = UserInfo.data["username"]; // Ambil username pengguna saat ini
-    print("WOIIIIIIIIII" + currentUser);
+
   }
 
   Future<List<Review>> fetchReviews(int productId) async {
@@ -73,6 +70,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    String? userRole = UserInfo.data['role'].toString().toLowerCase();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(),
@@ -163,11 +161,11 @@ class _ReviewPageState extends State<ReviewPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(right: 16.0),
+                            const Padding(
+                              padding: EdgeInsets.only(right: 16.0),
                               child: Text(
                                 '4.5', // Ganti dengan rating rata-rata dinamis jika tersedia
-                                style: const TextStyle(fontSize: 48),
+                                style: TextStyle(fontSize: 48),
                               ),
                             ),
                             Column(
@@ -197,20 +195,36 @@ class _ReviewPageState extends State<ReviewPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0, vertical: 12.0),
                           ),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddReviewPage(productId: widget.productId), // Kirimkan productId yang benar
-                              ),
-                            );
+                            if (UserInfo.loggedIn) {
+                              // Jika pengguna sudah login, navigasi ke AddReviewPage
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddReviewPage(
+                                      productId: widget
+                                          .productId), // Kirimkan productId yang benar
+                                ),
+                              );
+                            } else {
+                              // Jika pengguna belum login, tampilkan snackbar
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Anda belum login'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
                           },
                           child: const ListTile(
                             leading: Icon(Icons.add, color: Colors.black),
-                            title: Text('Add Review', style: TextStyle(fontWeight: FontWeight.bold)),
-                            trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                            title: Text('Add Review',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            trailing:
+                                Icon(Icons.chevron_right, color: Colors.grey),
                           ),
                         ),
                       ),
@@ -230,8 +244,8 @@ class _ReviewPageState extends State<ReviewPage> {
                             rating: review.fields.rating,
                             reviewId: review.id, // Kirimkan ID review
                             currentUser: currentUser,
-                            // currentUser: "farid22", // Kirimkan username pengguna saat ini
                             onRefresh: refreshReviews, 
+                            userRole: userRole,
                             onDelete: () {
                               setState(() {
                                 reviews = fetchReviews(widget.productId); // Muat ulang data review

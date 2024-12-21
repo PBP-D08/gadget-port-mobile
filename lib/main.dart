@@ -9,13 +9,26 @@ void main() {
   runApp(const GadgetPort());
 }
 
+// Session
 class UserInfo {
   static bool loggedIn = false;
   static Map<String, dynamic> data = {};
 
-  static void login(Map<String, dynamic> data) {
+  static void login(Map<String, dynamic> userData) {
+    if (userData.isEmpty) {
+      print("Warning: userData is empty!");
+      return;
+    }
+
+    if (userData['username'] == null) {
+      print("Warning: username is null in userData!");
+      return;
+    }
+
     loggedIn = true;
-    UserInfo.data = data;
+    data = Map<String, dynamic>.from(userData); // Create a new copy
+    
+    print("UserInfo.loggedIn: $loggedIn"); // Debug print
   }
 
   static void logout() {
@@ -38,8 +51,8 @@ class GadgetPort extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Gadget Port',
         theme: AppTheme.lightTheme,
-        home: const LoginPage(),
-        // home: const HomeScreen()
+        // home: const LoginPage(),
+        home: const HomeScreen()
       ),
     );
   }

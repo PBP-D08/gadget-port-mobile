@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:gadget_port_mobile/auth/register.dart';
 import 'package:gadget_port_mobile/auth/widgets/login_button.dart';
-import 'package:gadget_port_mobile/screens/home_screen.dart';
 import '/../themes/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,58 +25,72 @@ class _LoginPageState extends State<LoginPage> {
     passwordController = TextEditingController();
     super.initState();
   }
+// Future<void> loginUser(String username, String password) async {
+//   try {
+//     setState(() {
+//       loadingBallAppear = true;
+//     });
 
-  Future<void> loginUser(String username, String password) async {
+//     final request = context.read<CookieRequest>();
+//     final response = await request.login(
+//       "http://localhost:8000/signin/login_flutter/",
+//       {'username': username, 'password': password},
+//     );
+
+//     if (response != null && response['username'] != null) {
+//       Map<String, dynamic> userData = {
+//         "username": response["username"],
+//       };
+      
+//       print("Data before login: $userData");
+//       UserInfo.login(userData);
+//       print("UserInfo after login: ${UserInfo.data}");
+      
+//       if (UserInfo.loggedIn) {
+//         print("Login successful: ${UserInfo.getString('username')}");
+//       } else {
+//         print("Login failed: UserInfo not updated properly");
+//       }
+//     } else {
+//       print("Invalid response format: $response");
+//     }
+//   } catch (e) {
+//     print("Error during login: $e");
+//   } finally {
+//     setState(() {
+//       loadingBallAppear = false;
+//     });
+//   }
+// }
+Future<void> loginUser(String username, String password) async {
+  try {
     setState(() {
       loadingBallAppear = true;
     });
 
-    final request = context.watch<CookieRequest>();
-
-  final response = await request.login(
-    "http://localhost:8000/signin/login_flutter/",
-    {'username': username, 'password': password},
-  );
-    print("RESPONES WOI" + response['username']);
-    await Future.delayed(const Duration(milliseconds: 1), () {
-      setState(() {
-        loadingBallAppear = false;
+    final request = context.read<CookieRequest>();
+    final response = await request.login(
+      "http://localhost:8000/signin/login_flutter/",
+      {'username': username, 'password': password},
+    );
+    if (response != null) {
+      // Print setiap key yang ada di response
+      response.forEach((key, value) {
+        print("Key: $key, Value: $value");
       });
 
-      if (request.loggedIn) {
-        // Simpan informasi pengguna di UserInfo
-        Map<String, dynamic> data = {
-          "username": response["username"],
-        };
-        print("Data setelah login: ${data}");
-        UserInfo.login(data);
-        print("Data UserInfo setelah login: ${UserInfo.data}");
-
-        // print(UserInfo);
-        // print("CEKK" + UserInfo.data['username']);
-        print("zzzzzzzzzzz");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "${response['message']} Selamat datang, ${response['username']}"),
-          backgroundColor: Colors.green,
-        ));
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content:
-              Text(response['message'] ?? 'Login gagal. Silakan coba lagi.'),
-          backgroundColor: Colors.red,
-        ));
-      }
-    });
+      Map<String, dynamic> userData = {
+        "username": response["username"],
+      };
+      UserInfo.login(userData);
+    }
+  } catch (e, stackTrace) {
+    print("Error during login: $e");
+    print("Stack trace: $stackTrace");
   }
-
+}
   @override
   Widget build(BuildContext context) {
-    print("Data UserInfo setelah login: ${UserInfo.data}");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme, // Use the predefined light theme
@@ -193,9 +206,9 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                       );
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       'Register',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color:
                                             Color.fromARGB(255, 52, 152, 219),
                                         fontSize: 16.0,

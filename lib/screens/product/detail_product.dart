@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/auth/login.dart';
+import 'package:gadget_port_mobile/main.dart';
 import 'package:gadget_port_mobile/models/store.dart';
 import 'package:gadget_port_mobile/screens/cart/cart_screen.dart'; // Import halaman store
 import 'package:gadget_port_mobile/screens/store/store_detail_screen.dart';
@@ -22,40 +24,64 @@ class DetailProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? userRole = UserInfo.data['role'].toString().toLowerCase();
     // Cari store berdasarkan storeId
     return Scaffold(
       appBar: AppBar(
         title: Text(product.fields.name),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CartScreen(
-                    selectedIndex:
-                        0, // Replace with your desired selectedIndex value
-                    onItemTapped: (index) {
-                      // Handle item tapping logic
-                    },
+          if (UserInfo.loggedIn) ...{
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartScreen(
+                      selectedIndex:
+                          0, // Replace with your desired selectedIndex value
+                      onItemTapped: (index) {
+                        // Handle item tapping logic
+                      },
+                    ),
                   ),
+                );
+              },
+              icon: Icon(Icons.shopping_cart_outlined),
+            ),
+            const SizedBox(width: 16),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WishlistPage(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.favorite_border),
+            ),
+          } else ...{
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: const Color.fromARGB(255, 100, 153, 233),
+                backgroundColor: Colors.white,
+                side:
+                    const BorderSide(color: Color.fromARGB(255, 100, 153, 233)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-              );
-            },
-            icon: Icon(Icons.shopping_cart_outlined),
-          ),
-          const SizedBox(width: 16),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WishlistPage(),
-                ),
-              );
-            },
-            icon: Icon(Icons.favorite_border),
-          ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              ),
+              child: const Text('Login'),
+            ),
+          },
           const SizedBox(width: 16),
         ],
       ),
@@ -79,24 +105,26 @@ class DetailProductPage extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
 
-              // Nama produk
-              Text(
-                product.fields.name,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              const SizedBox(height: 8.0),
-
               // Harga dengan format mata uang
               Text(
                 'Rp ${NumberFormat('#,###', 'id_ID').format(product.fields.price)}',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 30,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
                 ),
               ),
+              const SizedBox(height: 8.0),
+              // Nama produk
+              Text(
+                product.fields.name,
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.normal,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+
               const SizedBox(height: 16.0),
 
               // Spesifikasi
@@ -126,7 +154,7 @@ class DetailProductPage extends StatelessWidget {
 
               // RatingCard
               const Padding(
-                padding: EdgeInsets.all(defaultPadding),
+                padding: EdgeInsets.fromLTRB(1, 2, 1, 5),
                 child: RatingCard(
                   rating: 4.3,
                   numOfReviews: 100,
@@ -158,7 +186,7 @@ class DetailProductPage extends StatelessWidget {
                 },
                 child: const ListTile(
                   leading: Icon(Icons.reviews_rounded, color: Colors.black),
-                  title: Text('Reviews',
+                  title: Text('See Reviews',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
@@ -190,11 +218,17 @@ class DetailProductPage extends StatelessWidget {
                       ),
                     ),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Ikon Logo
-                        Icon(Icons.storefront,
-                            size: 40.0, color: Theme.of(context).primaryColor),
+                        // Ikon Logo dalam Container untuk penyesuaian posisi
+                        Container(
+                          height: 40.0, // Sesuaikan tinggi sesuai kebutuhan
+                          alignment:
+                              Alignment.center, // Pusatkan ikon secara vertikal
+                          child: Icon(Icons.storefront,
+                              size: 40.0,
+                              color: Theme.of(context).primaryColor),
+                        ),
                         const SizedBox(width: 16.0),
 
                         // Informasi Toko
@@ -215,9 +249,7 @@ class DetailProductPage extends StatelessWidget {
 
                             // Alamat Toko
                             Text(
-                              // ignore: unnecessary_null_comparison
-                              stores[product.fields.store].fields.alamat !=
-                                      null
+                              stores[product.fields.store].fields.alamat != null
                                   ? (stores[product.fields.store]
                                               .fields
                                               .alamat
@@ -245,80 +277,107 @@ class DetailProductPage extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
+              )
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Wishlist Button
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content:
-                            Text('${product.fields.name} added to wishlist!')),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: const Color.fromARGB(255, 100, 153, 233),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+      bottomNavigationBar: userRole == 'buyer'
+          ? Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Wishlist Button
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  '${product.fields.name} added to wishlist!')),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor:
+                            const Color.fromARGB(255, 100, 153, 233),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 20.0),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.favorite_border_rounded,
+                              color: Colors.white),
+                          SizedBox(width: 8.0),
+                          Text('Add to Wishlist'),
+                        ],
+                      ),
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 20.0),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.favorite_border_rounded, color: Colors.white),
-                    SizedBox(width: 8.0),
-                    Text('Add to Wishlist'),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 8.0),
-            // Cart Button
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('${product.fields.name} added to cart!')),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: const Color.fromARGB(255, 100, 153, 233),
-                  backgroundColor: Colors.white,
-                  side: BorderSide(
-                      color: const Color.fromARGB(255, 100, 153, 233)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                  const SizedBox(width: 8.0),
+                  // Cart Button
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  '${product.fields.name} added to cart!')),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: const Color.fromARGB(255, 100, 153, 233),
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 100, 153, 233)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 20.0),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_shopping_cart,
+                              color: Color.fromARGB(255, 100, 153, 233)),
+                          SizedBox(width: 8.0),
+                          Text('Add to Cart'),
+                        ],
+                      ),
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 20.0),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add_shopping_cart,
-                        color: Color.fromARGB(255, 100, 153, 233)),
-                    SizedBox(width: 8.0),
-                    Text('Add to Cart'),
-                  ],
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+            )
+          : UserInfo.loggedIn == false
+              ? Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: const Color.fromARGB(255, 100, 153, 233),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0, vertical: 20.0),
+                    ),
+                    child: const Text('Login'),
+                  ),
+                )
+              : null,
     );
   }
 }
