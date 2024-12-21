@@ -49,7 +49,8 @@ class CartScreen extends StatelessWidget {
                   children: [
                     // Store header
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: const BorderRadius.only(
@@ -79,7 +80,7 @@ class CartScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    
+
                     // Store items
                     ...List.generate(
                       store['items'].length,
@@ -125,7 +126,8 @@ class CartScreen extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       if (item['discount'] != null)
                                         Container(
@@ -135,11 +137,13 @@ class CartScreen extends StatelessWidget {
                                           ),
                                           decoration: BoxDecoration(
                                             color: Colors.red[50],
-                                            borderRadius: BorderRadius.circular(4),
+                                            borderRadius:
+                                                BorderRadius.circular(4),
                                           ),
                                           child: Text(
                                             item['discount'],
-                                            style: theme.textTheme.bodySmall?.copyWith(
+                                            style: theme.textTheme.bodySmall
+                                                ?.copyWith(
                                               color: Colors.red,
                                             ),
                                           ),
@@ -155,7 +159,8 @@ class CartScreen extends StatelessWidget {
                                         const SizedBox(height: 4),
                                         Text(
                                           item['variant'],
-                                          style: theme.textTheme.bodyMedium?.copyWith(
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(
                                             color: Colors.grey[600],
                                           ),
                                         ),
@@ -164,14 +169,17 @@ class CartScreen extends StatelessWidget {
                                       if (item['originalPrice'] != null)
                                         Text(
                                           'Rp${item['originalPrice'].toString().replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}',
-                                          style: theme.textTheme.bodyMedium?.copyWith(
-                                            decoration: TextDecoration.lineThrough,
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(
+                                            decoration:
+                                                TextDecoration.lineThrough,
                                             color: Colors.grey[600],
                                           ),
                                         ),
                                       Text(
                                         'Rp${item['price'].toString().replaceAll(RegExp(r'\B(?=(\d{3})+(?!\d))'), '.')}',
-                                        style: theme.textTheme.titleMedium?.copyWith(
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -181,7 +189,8 @@ class CartScreen extends StatelessWidget {
                               ),
                               // Action buttons
                               Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.note_alt_outlined),

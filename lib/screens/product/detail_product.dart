@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gadget_port_mobile/main.dart';
 import 'package:gadget_port_mobile/models/store.dart';
 import 'package:gadget_port_mobile/screens/cart/cart_screen.dart'; // Import halaman store
 import 'package:gadget_port_mobile/screens/store/store_detail_screen.dart';
+import 'package:gadget_port_mobile/screens/wishlist/wishlist_screen.dart';
 import '../../models/products.dart';
-import 'product_card.dart';
 import '../review/components/rating_card.dart';
 import '../review/review_page.dart';
 import 'package:intl/intl.dart';
@@ -25,10 +23,41 @@ class DetailProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Cari store berdasarkan storeId
-
     return Scaffold(
       appBar: AppBar(
         title: Text(product.fields.name),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartScreen(
+                    selectedIndex:
+                        0, // Replace with your desired selectedIndex value
+                    onItemTapped: (index) {
+                      // Handle item tapping logic
+                    },
+                  ),
+                ),
+              );
+            },
+            icon: Icon(Icons.shopping_cart_outlined),
+          ),
+          const SizedBox(width: 16),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WishlistPage(),
+                ),
+              );
+            },
+            icon: Icon(Icons.favorite_border),
+          ),
+          const SizedBox(width: 16),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -186,12 +215,20 @@ class DetailProductPage extends StatelessWidget {
 
                             // Alamat Toko
                             Text(
-                              stores[product.fields.store]?.fields.alamat != null
-                                  ? (stores[product.fields.store]!.fields.alamat.length > 50
-                                      ? '${stores[product.fields.store].fields.alamat.substring(0, 50)}...' 
-                                      : stores[product.fields.store].fields.alamat)
+                              stores[product.fields.store]?.fields.alamat !=
+                                      null
+                                  ? (stores[product.fields.store]!
+                                              .fields
+                                              .alamat
+                                              .length >
+                                          50
+                                      ? '${stores[product.fields.store].fields.alamat.substring(0, 50)}...'
+                                      : stores[product.fields.store]
+                                          .fields
+                                          .alamat)
                                   : "Alamat tidak tersedia",
-                              style: const TextStyle(fontSize: 14.0, color: Colors.grey),
+                              style: const TextStyle(
+                                  fontSize: 14.0, color: Colors.grey),
                             ),
                             const SizedBox(height: 4.0),
 

@@ -139,8 +139,8 @@ void _onItemTapped(int index) {
       );
       break;
     case 4:
-      // targetScreen = const WishlistScreen();
-      targetScreen = const HomeScreen();
+      targetScreen = const WishlistPage();
+      // targetScreen = const HomeScreen();
       break;
     case 5:
       targetScreen = const ProfileScreen();
