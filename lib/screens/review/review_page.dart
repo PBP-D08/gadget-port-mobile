@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gadget_port_mobile/main.dart';
 import 'package:gadget_port_mobile/screens/review/add_review.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:gadget_port_mobile/models/review.dart';
-import '/../widgets/bottom_nav_bar.dart';
 import 'components/review_card.dart';
-import 'package:gadget_port_mobile/models/user.dart'; // Pastikan Anda mengimpor model User
+import '../../themes/app_theme.dart';
 
 class ReviewPage extends StatefulWidget {
   final int productId; // Tambahkan property productId
   const ReviewPage({super.key, required this.productId}); // Tambahkan productId ke konstruktor
-
+  
   @override
   State<ReviewPage> createState() => _ReviewPageState();
 }
@@ -22,6 +18,9 @@ class _ReviewPageState extends State<ReviewPage> {
   // Future<List<Review>>? reviewsFuture;
   late Future<List<Review>> reviews;
   late String currentUser ; // Menambahkan variabel untuk menyimpan username pengguna saat ini
+  int? selectedRating; // Filter rating
+  bool isAscending = true; // Untuk sorting
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +66,33 @@ class _ReviewPageState extends State<ReviewPage> {
     });
   }
 
+  List<Review> filterAndSortReviews(List<Review> reviews) {
+    // Filter berdasarkan rating jika ada filter yang dipilih
+    var filteredReviews = selectedRating != null
+        ? reviews.where((review) => review.fields.rating == selectedRating).toList()
+        : reviews;
+
+    // Sort berdasarkan rating
+    filteredReviews.sort((a, b) {
+      if (isAscending) {
+        return a.fields.rating.compareTo(b.fields.rating);
+      } else {
+        return b.fields.rating.compareTo(a.fields.rating);
+      }
+    });
+
+    return filteredReviews;
+  }
+  double calculateAverageRating(List<Review> reviews) {
+    if (reviews.isEmpty) return 0.0;
+    final totalRating =
+        reviews.fold<double>(0.0, (sum, review) => sum + review.fields.rating);
+    return totalRating / reviews.length;
+  }
+
+  int countTotalReviews(List<Review> reviews) {
+    return reviews.length;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,17 +103,20 @@ class _ReviewPageState extends State<ReviewPage> {
       home: Scaffold(
         backgroundColor: Colors.grey[100],
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 191, 219, 254),
-          iconTheme: const IconThemeData(color: Colors.black),
-          elevation: 0.0,
+          title: const Text(
+            'Reviews',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.black, // Menambahkan warna teks untuk konsistensi
+            ),
+          ),
+          backgroundColor: Color.fromARGB(255, 191, 219, 254),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: const Text('Reviews', style: TextStyle(color: Colors.black)),
-          centerTitle: true,
         ),
         body: FutureBuilder<List<Review>>(
           future: reviews,
@@ -151,21 +180,28 @@ class _ReviewPageState extends State<ReviewPage> {
                 ),
               );
             } else {
+              final allReviews = snapshot.data!; // Semua review
+              final filteredAndSortedReviews = filterAndSortReviews(allReviews);
+              final averageRating = calculateAverageRating(allReviews); // Hitung rata-rata dari semua review
+              final totalReviews = countTotalReviews(allReviews); // Hitung total dari semua review
+
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: SingleChildScrollView(
+                  
                   child: Column(
                     children: <Widget>[
+                      // Container untuk rata-rata rating
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 40),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            const Padding(
-                              padding: EdgeInsets.only(right: 16.0),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
                               child: Text(
-                                '4.5', // Ganti dengan rating rata-rata dinamis jika tersedia
-                                style: TextStyle(fontSize: 48),
+                                averageRating.toStringAsFixed(1), // Rata-rata rating dari semua review
+                                style: const TextStyle(fontSize: 48),
                               ),
                             ),
                             Column(
@@ -175,13 +211,67 @@ class _ReviewPageState extends State<ReviewPage> {
                                     5,
                                     (index) => Icon(
                                       Icons.star,
-                                      color: index < 4 ? Colors.yellow : Colors.grey, // Ganti "4" dengan jumlah rating dinamis
+                                      color: index < averageRating.floor()
+                                          ? Colors.yellow
+                                          : Colors.grey, // Warna berdasarkan rating
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                const Text('from 25 reviews'),
+                                Text('from $totalReviews reviews'), // Total review dari semua review
                               ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16), // Spasi antar elemen
+
+                      // Filter Rating dan Sort Button
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Filter Rating
+                            DropdownButton<int>(
+                              hint: const Text('Filter Rating'),
+                              value: selectedRating,
+                              items: [null, 1, 2, 3, 4, 5].map((rating) {
+                                return DropdownMenuItem<int>(
+                                  value: rating,
+                                  child: Text(
+                                    rating == null ? 'All Ratings' : '$rating Star',
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedRating = value;
+                                });
+                              },
+                              // Properti tambahan untuk perbaikan
+                              alignment: Alignment.centerLeft, // Menjaga dropdown tetap di posisi
+                              dropdownColor: Colors.white, // Warna background dropdown
+                              icon: const Icon(Icons.arrow_drop_down), // Ikon dropdown
+                              iconEnabledColor: Colors.grey, // Warna ikon dropdown
+                            ),
+
+                            // Sort Button
+                            TextButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  isAscending = !isAscending; // Toggle sorting order
+                                });
+                              },
+                              icon: Icon(
+                                isAscending ? Icons.arrow_downward : Icons.arrow_upward,
+                                color: const Color.fromARGB(255, 100, 153, 233), // Warna ikon
+                              ),
+                              label: Text(
+                                isAscending ? 'Terendah' : 'Tertinggi', // Teks label
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 100, 153, 233)), // Warna teks
+                              ),
                             ),
                           ],
                         ),
@@ -235,22 +325,23 @@ class _ReviewPageState extends State<ReviewPage> {
                           child: Text('Recent Reviews', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                       ),
+                      
                       Column(
-                        children: snapshot.data!.map((review) {
+                        children: filteredAndSortedReviews.map((review) {
                           return ReviewCard(
                             reviewText: review.fields.reviewText,
-                            username: review.user.username, // Gunakan username dari user
+                            username: review.user.username,
                             timestamp: review.fields.timestamp.toIso8601String(),
                             rating: review.fields.rating,
-                            reviewId: review.id, // Kirimkan ID review
+                            reviewId: review.id,
                             currentUser: currentUser,
-                            onRefresh: refreshReviews, 
+                            onRefresh: refreshReviews,
                             userRole: userRole,
                             onDelete: () {
                               setState(() {
-                                reviews = fetchReviews(widget.productId); // Muat ulang data review
+                                reviews = fetchReviews(widget.productId);
                               });
-                            }, // Callback untuk memperbarui state
+                            },
                           );
                         }).toList(),
                       )
