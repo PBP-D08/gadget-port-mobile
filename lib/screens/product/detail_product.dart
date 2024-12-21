@@ -215,9 +215,10 @@ class DetailProductPage extends StatelessWidget {
 
                             // Alamat Toko
                             Text(
-                              stores[product.fields.store]?.fields.alamat !=
+                              // ignore: unnecessary_null_comparison
+                              stores[product.fields.store].fields.alamat !=
                                       null
-                                  ? (stores[product.fields.store]!
+                                  ? (stores[product.fields.store]
                                               .fields
                                               .alamat
                                               .length >
