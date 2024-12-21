@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/auth/login.dart';
+import 'package:gadget_port_mobile/auth/register.dart';
 import 'package:gadget_port_mobile/main.dart';
 import 'package:gadget_port_mobile/models/store.dart';
 import 'package:gadget_port_mobile/screens/store/store_detail_screen.dart';
@@ -229,6 +231,83 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (!UserInfo.loggedIn) ...[
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Login atau Register untuk kemudahan dalam berbelanja di GadgetPort. 😉',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor:
+                                  const Color.fromARGB(255, 100, 153, 233),
+                              backgroundColor: Colors.white,
+                              side: const BorderSide(
+                                  color: Color.fromARGB(255, 100, 153, 233)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 10.0),
+                            ),
+                            child: const Text('Login'),
+                          ),
+                           const SizedBox(width: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor:
+                                  const Color.fromARGB(255, 100, 153, 233),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 10.0),
+                            ),
+                            child: const Text('Register'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+
               // Banner Section
               SizedBox(
                 height: 200,
@@ -467,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: const Color.fromARGB(
                             255, 255, 255, 255), // Warna latar belakang
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(
+                          side: const BorderSide(
                             color: Color.fromARGB(
                                 255, 100, 153, 233), // Warna border
                             width: 2, // Lebar border
@@ -476,8 +555,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               BorderRadius.circular(20), // Radius border
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
                             vertical: 10.0), // Add vertical padding
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -556,4 +635,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

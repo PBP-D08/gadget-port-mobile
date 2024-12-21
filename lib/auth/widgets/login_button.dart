@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/main.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:gadget_port_mobile/screens/home_screen.dart';
@@ -37,17 +38,24 @@ class _GetStartedButtonState extends State<GetStartedButton> {
     final request = context.read<CookieRequest>();
 
     final response = await request.login(
-      "http:///localhost:8000/signin/login_flutter/", // Gunakan IP emulator Android
+      "http://localhost:8000/signin/login_flutter/",
       {'username': username, 'password': password},
     );
 
-    setState(() {
-      _isLoading = false;
-    });
+    // Debug prints
+    print("Full API Response: $response");
 
     if (request.loggedIn) {
       String message = response['message'];
       String uname = response['username'];
+      String role = response['role'];
+      // Simpan data ke UserInfo
+      Map<String, dynamic> userData = {
+        "username": uname,
+        "role" : role
+      };
+
+      UserInfo.login(userData);
 
       if (context.mounted) {
         Navigator.pushReplacement(
@@ -78,6 +86,10 @@ class _GetStartedButtonState extends State<GetStartedButton> {
         );
       }
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override

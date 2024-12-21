@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gadget_port_mobile/main.dart';
 import 'package:gadget_port_mobile/screens/review/edit_review.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +13,7 @@ class ReviewCard extends StatelessWidget {
   final String currentUser;
   final VoidCallback onDelete;
   final VoidCallback onRefresh;  // Tambahkan parameter ini
+  final String userRole;
 
   const ReviewCard({
     Key? key,
@@ -21,10 +23,11 @@ class ReviewCard extends StatelessWidget {
     required this.rating,
     required this.reviewId,
     required this.currentUser,
+    required this.userRole,
     required this.onDelete,
     required this.onRefresh,  // Tambahkan ini ke constructor
   }) : super(key: key);
-
+  
   String formatTimestamp() {
     try {
       final DateTime dateTime = DateTime.parse(timestamp);
@@ -94,19 +97,28 @@ class ReviewCard extends StatelessWidget {
                       style: const TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                     
-                    if (username == currentUser)
+                    if (username == currentUser || userRole == 'admin')
                       PopupMenuButton<String>(
                         onSelected: (String value) async {
                           if (value == 'edit') {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditReviewPage(reviewId: reviewId),
-                              ),
-                            );
+                            if(userRole == 'buyer') {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditReviewPage(reviewId: reviewId),
+                                ),
+                              );
                               // Jika hasil edit sukses, refresh reviews
-                            if (result == true) {
-                              onRefresh();  // Panggil callback untuk refresh
+                              if (result == true) {
+                                onRefresh();  // Panggil callback untuk refresh
+                              }
+                            } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      "Admin tidak bisa mengedit review!"),
+                                ),
+                              );
                             }
                           } else if (value == 'delete') {
                             deleteReview(context);

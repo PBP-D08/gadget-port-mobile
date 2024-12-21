@@ -57,7 +57,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
         );
 
         if (context.mounted) {
-          if (response['status'] == 'success') {
+          if (response['status'] == 'success' && UserInfo.data['role'] == 'buyer') {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text("Your review has been published!"),
@@ -66,6 +66,12 @@ class _AddReviewPageState extends State<AddReviewPage> {
             );
             // Kembali ke homepage
             Navigator.popUntil(context, (route) => route.isFirst);
+          } else if (UserInfo.data['role'] == 'admin') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Hanya Buyer yang bisa memberikan review!"),
+              ),
+            );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
