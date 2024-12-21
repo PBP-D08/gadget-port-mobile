@@ -229,8 +229,8 @@ class _ReviewPageState extends State<ReviewPage> {
                             timestamp: review.fields.timestamp.toIso8601String(),
                             rating: review.fields.rating,
                             reviewId: review.id, // Kirimkan ID review
-                            // currentUser: currentUser,
-                            currentUser: "farid22", // Kirimkan username pengguna saat ini
+                            currentUser: currentUser,
+                            // currentUser: "farid22", // Kirimkan username pengguna saat ini
                             onRefresh: refreshReviews, 
                             onDelete: () {
                               setState(() {

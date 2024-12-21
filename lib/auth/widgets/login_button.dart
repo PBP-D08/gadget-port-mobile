@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart'; 
+import 'package:provider/provider.dart';
 import 'package:gadget_port_mobile/screens/home_screen.dart';
 
 class GetStartedButton extends StatefulWidget {
@@ -83,21 +83,22 @@ class _GetStartedButtonState extends State<GetStartedButton> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const CircularProgressIndicator() : 
-        ElevatedButton(
-          onPressed: _handleLogin,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 191, 219, 254), // Warna tombol
-            minimumSize: Size(double.infinity, 50),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        ? const CircularProgressIndicator()
+        : ElevatedButton(
+            onPressed: _handleLogin,
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  const Color.fromARGB(255, 191, 219, 254), // Warna tombol
+              minimumSize: Size(double.infinity, 50),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-          child: const Text(
-            'Login',
-            style: TextStyle(fontSize: 20),
-          ),
-        );
+            child: const Text(
+              'Login',
+              style: TextStyle(fontSize: 20),
+            ),
+          );
   }
 }

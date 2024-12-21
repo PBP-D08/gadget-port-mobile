@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gadget_port_mobile/main.dart';
 import 'package:gadget_port_mobile/models/store.dart';
-import 'package:gadget_port_mobile/screens/cart/cart_screen.dart';// Import halaman store
+import 'package:gadget_port_mobile/screens/cart/cart_screen.dart'; // Import halaman store
 import 'package:gadget_port_mobile/screens/store/store_detail_screen.dart';
 import '../../models/products.dart';
 import 'product_card.dart';
@@ -14,12 +14,12 @@ const double defaultPadding = 16.0;
 
 class DetailProductPage extends StatelessWidget {
   final Katalog product;
-  final Store store;
+  final List<Store> stores;
 
   const DetailProductPage({
     Key? key,
     required this.product,
-    required this.store,
+    required this.stores,
   }) : super(key: key);
 
   @override
@@ -82,7 +82,8 @@ class DetailProductPage extends StatelessWidget {
                   children: [
                     const Text(
                       'Product Info:',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8.0),
                     Text(
@@ -115,7 +116,8 @@ class DetailProductPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 12.0),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -127,7 +129,8 @@ class DetailProductPage extends StatelessWidget {
                 },
                 child: const ListTile(
                   leading: Icon(Icons.reviews_rounded, color: Colors.black),
-                  title: Text('Reviews', style: TextStyle(fontWeight: FontWeight.bold)),
+                  title: Text('Reviews',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -135,31 +138,34 @@ class DetailProductPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ElevatedButton(
-                    onPressed: store != null
+                    onPressed: stores != null
                         ? () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => StoreDetailPage(
-                                  store: store,
+                                  store: stores[product.fields.store],
                                   products: [], // Jika ada daftar produk di store
                                 ),
                               ),
                             );
                           }
                         : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white, // Ubah warna tombol menjadi putih
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Colors.white, // Ubah warna tombol menjadi putih
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0, vertical: 12.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
+                    ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Ikon Logo
-                        Icon(Icons.storefront, size: 40.0, color: Theme.of(context).primaryColor),
+                        Icon(Icons.storefront,
+                            size: 40.0, color: Theme.of(context).primaryColor),
                         const SizedBox(width: 16.0),
 
                         // Informasi Toko
@@ -168,7 +174,9 @@ class DetailProductPage extends StatelessWidget {
                           children: [
                             // Nama Toko
                             Text(
-                              store != null ? store.fields.nama : product.fields.brand,
+                              stores != null
+                                  ? stores[product.fields.store].fields.nama
+                                  : product.fields.brand,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18.0,
@@ -178,10 +186,10 @@ class DetailProductPage extends StatelessWidget {
 
                             // Alamat Toko
                             Text(
-                              store?.fields.alamat != null
-                                  ? (store!.fields.alamat.length > 50
-                                      ? '${store.fields.alamat.substring(0, 50)}...' 
-                                      : store.fields.alamat)
+                              stores[product.fields.store]?.fields.alamat != null
+                                  ? (stores[product.fields.store]!.fields.alamat.length > 50
+                                      ? '${stores[product.fields.store].fields.alamat.substring(0, 50)}...' 
+                                      : stores[product.fields.store].fields.alamat)
                                   : "Alamat tidak tersedia",
                               style: const TextStyle(fontSize: 14.0, color: Colors.grey),
                             ),
@@ -189,8 +197,9 @@ class DetailProductPage extends StatelessWidget {
 
                             // Jam Buka dan Tutup
                             Text(
-                              "Jam buka: ${store?.fields.jamBuka ?? '-'} - ${store?.fields.jamTutup ?? '-'}",
-                              style: const TextStyle(fontSize: 14.0, color: Colors.grey),
+                              "Jam buka: ${stores[product.fields.store]?.fields.jamBuka ?? '-'} - ${stores[product.fields.store]?.fields.jamTutup ?? '-'}",
+                              style: const TextStyle(
+                                  fontSize: 14.0, color: Colors.grey),
                             ),
                           ],
                         ),
@@ -213,7 +222,9 @@ class DetailProductPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${product.fields.name} added to wishlist!')),
+                    SnackBar(
+                        content:
+                            Text('${product.fields.name} added to wishlist!')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -222,7 +233,8 @@ class DetailProductPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 20.0),
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -240,22 +252,26 @@ class DetailProductPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${product.fields.name} added to cart!')),
+                    SnackBar(
+                        content: Text('${product.fields.name} added to cart!')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: const Color.fromARGB(255, 100, 153, 233),
                   backgroundColor: Colors.white,
-                  side: BorderSide(color: const Color.fromARGB(255, 100, 153, 233)),
+                  side: BorderSide(
+                      color: const Color.fromARGB(255, 100, 153, 233)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 20.0),
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.add_shopping_cart, color: Color.fromARGB(255, 100, 153, 233)),
+                    Icon(Icons.add_shopping_cart,
+                        color: Color.fromARGB(255, 100, 153, 233)),
                     SizedBox(width: 8.0),
                     Text('Add to Cart'),
                   ],

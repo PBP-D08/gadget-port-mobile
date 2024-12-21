@@ -394,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               MaterialPageRoute(
                                 builder: (context) => DetailProductPage(
                                   product: product,
-                                  store: stores[product.fields.store - 1],
+                                  stores: stores,
                                 ),
                               ),
                             );
@@ -535,7 +535,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               MaterialPageRoute(
                                 builder: (context) => DetailProductPage(
                                   product: product,
-                                  store: stores[product.fields.store - 1],
+                                  stores: stores,
                                 ),
                               ),
                             );
@@ -556,3 +556,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
