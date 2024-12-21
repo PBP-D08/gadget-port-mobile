@@ -30,18 +30,30 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const CustomAppBar({super.key, required this.title});
 
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      title: Image.asset(
-        'assets/images/Logo_gadget-port.png', // Make sure this path is correct
-        height: 40, // Adjust the size of the logo
-      ),
-      backgroundColor: Color.fromARGB(
-          255, 191, 219, 254), // Adjust the AppBar background color
-      centerTitle: true, // Center the logo
-    );
-  }
+@override
+Widget build(BuildContext context) {
+  return AppBar(
+    backgroundColor: Color.fromARGB(255, 191, 219, 254), // Warna latar belakang AppBar
+    title: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Mengatur ruang antara logo dan ikon
+      children: [
+        // Logo di sebelah kiri
+        Image.asset(
+          'assets/images/Logo_gadget-port.png', // Pastikan path ini benar
+          height: 40, // Sesuaikan ukuran logo
+        ),
+        // Ikon pencarian di sebelah kanan
+        IconButton(
+          icon: Icon(Icons.search), // Menggunakan ikon pencarian
+          onPressed: () {
+            // Tambahkan aksi yang diinginkan saat ikon ditekan
+          },
+        ),
+      ],
+    ),
+    centerTitle: false, // Tidak memusatkan judul
+  );
+}
 
   @override
   Size get preferredSize =>

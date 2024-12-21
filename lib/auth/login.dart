@@ -35,7 +35,7 @@ setState(() {
 final request = context.watch<CookieRequest>();
 
   final response = await request.login(
-    "http://localhost:8000/signin/login_flutter/", // Ganti dengan IP yang sesuai
+    "http://localhost:8000/signin/login_flutter/",
     {'username': username, 'password': password},
   );
     print("RESPONES WOI" + response['username']);

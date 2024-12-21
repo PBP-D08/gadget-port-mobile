@@ -40,7 +40,6 @@ class _EditReviewPageState extends State<EditReviewPage> {
     }
   }
 Future<void> _submitEditedReview() async {
-    // Ubah dari watch menjadi read
     final request = context.read<CookieRequest>();
 
     if (_formKey.currentState!.validate()) {
@@ -62,6 +61,7 @@ Future<void> _submitEditedReview() async {
                 backgroundColor: Color.fromARGB(255, 100, 153, 233),
               ),
             );
+            // Pop dengan result true untuk menandakan perlu refresh
             Navigator.pop(context, true);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(

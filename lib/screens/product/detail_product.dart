@@ -14,18 +14,17 @@ const double defaultPadding = 16.0;
 
 class DetailProductPage extends StatelessWidget {
   final Katalog product;
-  final Map<int, Store> storeMap;
+  final Store store;
 
   const DetailProductPage({
     Key? key,
     required this.product,
-    required this.storeMap,
+    required this.store,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Cari store berdasarkan storeId
-    final store = storeMap[product.fields.store];
 
     return Scaffold(
       appBar: AppBar(
@@ -179,7 +178,11 @@ class DetailProductPage extends StatelessWidget {
 
                             // Alamat Toko
                             Text(
-                              store?.fields.alamat ?? "Alamat tidak tersedia",
+                              store?.fields.alamat != null
+                                  ? (store!.fields.alamat.length > 50
+                                      ? '${store.fields.alamat.substring(0, 50)}...' 
+                                      : store.fields.alamat)
+                                  : "Alamat tidak tersedia",
                               style: const TextStyle(fontSize: 14.0, color: Colors.grey),
                             ),
                             const SizedBox(height: 4.0),
