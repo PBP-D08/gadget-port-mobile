@@ -16,7 +16,7 @@ class ProductCard extends StatelessWidget {
           MaterialPageRoute(
               builder: (context) => DetailProductPage(
                     product: product,
-                    storeMap: {},
+                    stores: [],
                   )),
         );
       },

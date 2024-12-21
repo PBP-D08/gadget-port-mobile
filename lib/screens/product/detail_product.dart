@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gadget_port_mobile/main.dart';
 import 'package:gadget_port_mobile/models/store.dart';
 import 'package:gadget_port_mobile/screens/cart/cart_screen.dart'; // Import halaman store
 import 'package:gadget_port_mobile/screens/store/store_detail_screen.dart';
+import 'package:gadget_port_mobile/screens/wishlist/wishlist_screen.dart';
 import '../../models/products.dart';
-import 'product_card.dart';
 import '../review/components/rating_card.dart';
 import '../review/review_page.dart';
 import 'package:intl/intl.dart';
@@ -14,22 +12,52 @@ const double defaultPadding = 16.0;
 
 class DetailProductPage extends StatelessWidget {
   final Katalog product;
-  final Map<int, Store> storeMap;
+  final List<Store> stores;
 
   const DetailProductPage({
     Key? key,
     required this.product,
-    required this.storeMap,
+    required this.stores,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Cari store berdasarkan storeId
-    final store = storeMap[product.fields.store];
-
     return Scaffold(
       appBar: AppBar(
         title: Text(product.fields.name),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartScreen(
+                    selectedIndex:
+                        0, // Replace with your desired selectedIndex value
+                    onItemTapped: (index) {
+                      // Handle item tapping logic
+                    },
+                  ),
+                ),
+              );
+            },
+            icon: Icon(Icons.shopping_cart_outlined),
+          ),
+          const SizedBox(width: 16),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WishlistPage(),
+                ),
+              );
+            },
+            icon: Icon(Icons.favorite_border),
+          ),
+          const SizedBox(width: 16),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -139,13 +167,13 @@ class DetailProductPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ElevatedButton(
-                    onPressed: store != null
+                    onPressed: stores != null
                         ? () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => StoreDetailPage(
-                                  store: store,
+                                  store: stores[product.fields.store],
                                   products: [], // Jika ada daftar produk di store
                                 ),
                               ),
@@ -175,8 +203,8 @@ class DetailProductPage extends StatelessWidget {
                           children: [
                             // Nama Toko
                             Text(
-                              store != null
-                                  ? store.fields.nama
+                              stores != null
+                                  ? stores[product.fields.store].fields.nama
                                   : product.fields.brand,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -187,7 +215,19 @@ class DetailProductPage extends StatelessWidget {
 
                             // Alamat Toko
                             Text(
-                              store?.fields.alamat ?? "Alamat tidak tersedia",
+                              // ignore: unnecessary_null_comparison
+                              stores[product.fields.store].fields.alamat !=
+                                      null
+                                  ? (stores[product.fields.store]
+                                              .fields
+                                              .alamat
+                                              .length >
+                                          50
+                                      ? '${stores[product.fields.store].fields.alamat.substring(0, 50)}...'
+                                      : stores[product.fields.store]
+                                          .fields
+                                          .alamat)
+                                  : "Alamat tidak tersedia",
                               style: const TextStyle(
                                   fontSize: 14.0, color: Colors.grey),
                             ),
@@ -195,7 +235,7 @@ class DetailProductPage extends StatelessWidget {
 
                             // Jam Buka dan Tutup
                             Text(
-                              "Jam buka: ${store?.fields.jamBuka ?? '-'} - ${store?.fields.jamTutup ?? '-'}",
+                              "Jam buka: ${stores[product.fields.store]?.fields.jamBuka ?? '-'} - ${stores[product.fields.store]?.fields.jamTutup ?? '-'}",
                               style: const TextStyle(
                                   fontSize: 14.0, color: Colors.grey),
                             ),

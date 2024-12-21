@@ -91,6 +91,7 @@ import 'package:gadget_port_mobile/screens/profile/profile_screen.dart';
 import 'package:gadget_port_mobile/screens/review/review_page.dart';
 import 'package:gadget_port_mobile/screens/wishlist/wishlist_screen.dart';
 import 'package:gadget_port_mobile/screens/store/store_list_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:gadget_port_mobile/screens/profile_screen.dart';
 // import 'package:gadget_port_mobile/screens/search_screen.dart';
 
@@ -117,47 +118,47 @@ class _BottomNavBarState extends State<BottomNavBar> {
     _selectedIndex = widget.selectedIndex;
   }
 
-  void _onItemTapped(int index) {
-    // Determine the target screen based on the index
-    Widget targetScreen;
-    switch (index) {
-      case 0:
-        targetScreen = const HomeScreen();
-        break;
-      case 1:
-        // targetScreen = const SearchScreen();
-        targetScreen = const HomeScreen();
-        break;
-      case 2:
-        targetScreen = const ProfileScreen();
-        break;
-      case 3:
-        targetScreen = CartScreen(
-          selectedIndex: index,
-          onItemTapped: _onItemTapped,
-        );
-        break;
-      case 4:
-        targetScreen = const WishlistPage();
-        // targetScreen = const HomeScreen();
-        break;
-      case 5:
-        targetScreen = const StoreListPage();
-        break;
-      default:
-        targetScreen = const HomeScreen();
-    }
+void _onItemTapped(int index) {
+  // Determine the target screen based on the index
+  Widget targetScreen;
+  switch (index) {
+    case 0:
+      targetScreen = const HomeScreen();
+      break;
+    case 1:
+      // targetScreen = const SearchScreen();
+      targetScreen = const HomeScreen();
+      break;
+    case 2:
+      targetScreen = const StoreListPage();
+      break;
+    case 3:
+      targetScreen = CartScreen(
+        selectedIndex: index,
+        onItemTapped: _onItemTapped,
+      );
+      break;
+    case 4:
+      targetScreen = const WishlistPage();
+      // targetScreen = const HomeScreen();
+      break;
+    case 5:
+      targetScreen = const ProfileScreen();
+      break;
+    default:
+      targetScreen = const HomeScreen();
+  }
 
     // Use custom onItemTapped if provided
     if (widget.onItemTapped != null) {
       widget.onItemTapped!(index);
     }
 
-    // Navigate to the selected screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => targetScreen),
-    );
+  // Navigate to the selected screen
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => targetScreen),
+  );
 
     // Update the selected index
     setState(() {
@@ -174,30 +175,38 @@ class _BottomNavBarState extends State<BottomNavBar> {
       selectedItemColor: const Color.fromARGB(255, 52, 152, 219),
       unselectedItemColor: const Color.fromARGB(255, 191, 219, 254),
       backgroundColor: Colors.white,
-      items: const [
-        BottomNavigationBarItem(
+      items: [
+        const BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Search',
+          icon: SvgPicture.asset(
+                "assets/icons/Category.svg",
+                width: 24.0,
+                height: 24.0,
+                colorFilter: const ColorFilter.mode(
+                  Color.fromARGB(255, 191, 219, 254),
+                  BlendMode.srcIn),
+            ),
+          label: 'Discover',
+          // unselectedItemColor: const Color.fromARGB(255, 191, 219, 254),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: 'Profile',
+         const BottomNavigationBarItem(
+          icon: Icon(Icons.store),
+          label: 'Stores',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.shopping_cart),
           label: 'Cart',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.favorite),
           label: 'Wishlist',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.store),
-          label: 'Stores',
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle),
+          label: 'Profile',
         ),
       ],
     );

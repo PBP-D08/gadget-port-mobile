@@ -34,10 +34,10 @@ class _LoginPageState extends State<LoginPage> {
 
     final request = context.watch<CookieRequest>();
 
-    final response = await request.login(
-      "http://localhost:8000/signin/login_flutter/", // Ganti dengan IP yang sesuai
-      {'username': username, 'password': password},
-    );
+  final response = await request.login(
+    "http://localhost:8000/signin/login_flutter/",
+    {'username': username, 'password': password},
+  );
     print("RESPONES WOI" + response['username']);
     await Future.delayed(const Duration(milliseconds: 1), () {
       setState(() {

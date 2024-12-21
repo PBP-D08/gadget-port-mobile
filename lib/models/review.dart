@@ -49,6 +49,10 @@ class Fields {
         timestamp: DateTime.parse(json["timestamp"]),
     );
 
+  get text => null;
+
+  get username => null;
+
     Map<String, dynamic> toJson() => {
         "rating": rating,
         "review_text": reviewText,
