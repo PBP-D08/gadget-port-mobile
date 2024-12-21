@@ -23,12 +23,13 @@ class UserInfo {
     data = {};
   }
 }
+
 class GadgetPort extends StatelessWidget {
   const GadgetPort({super.key});
 
   @override
   Widget build(BuildContext context) {
-   return Provider(
+    return Provider(
       create: (_) {
         CookieRequest request = CookieRequest();
         return request;
@@ -39,7 +40,6 @@ class GadgetPort extends StatelessWidget {
         theme: AppTheme.lightTheme,
         home: const LoginPage(),
         // home: const HomeScreen()
-
       ),
     );
   }

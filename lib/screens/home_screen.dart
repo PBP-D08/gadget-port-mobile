@@ -29,20 +29,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchProducts() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:8000/products/json/'));
+      final response =
+          await http.get(Uri.parse('http://localhost:8000/products/json/'));
 
       if (response.statusCode == 200) {
         // print("HOMESCREEN" + UserInfo.data['Username']);
 
         final List<dynamic> body = json.decode(response.body);
-        final List<Katalog> fetchedProducts = body.map((item) {
-          try {
-            return Katalog.fromJson(item);
-          } catch (e) {
-            print('Error parsing item: $item, Error: $e');
-            return null;
-          }
-        }).whereType<Katalog>().toList();
+        final List<Katalog> fetchedProducts = body
+            .map((item) {
+              try {
+                return Katalog.fromJson(item);
+              } catch (e) {
+                print('Error parsing item: $item, Error: $e');
+                return null;
+              }
+            })
+            .whereType<Katalog>()
+            .toList();
 
         setState(() {
           products = fetchedProducts;
@@ -52,11 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
         if (products.isEmpty) {
           print('No valid products found!');
         }
-
       } else {
         throw Exception('Failed to load products');
       }
-      
     } catch (e) {
       print('Error during JSON parsing: $e');
       setState(() {
@@ -66,7 +68,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 // Future<void> fetchStore() async {} // buat fetch store nanti taro di storeMap
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
               : Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 0.8,
                       crossAxisSpacing: 10,
@@ -90,14 +92,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       final product = products[index];
                       return ProductCard(
                         productName: product.fields.name,
-                        productPrice: 'Rp ${NumberFormat('#,###', 'id_ID').format(product.fields.price)}',
+                        productPrice:
+                            'Rp ${NumberFormat('#,###', 'id_ID').format(product.fields.price)}',
                         imageUrl: product.fields.imageLink,
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  DetailProductPage(product: product, storeMap: {},),
+                              builder: (context) => DetailProductPage(
+                                product: product,
+                                storeMap: {},
+                              ),
                             ),
                           );
                         },
