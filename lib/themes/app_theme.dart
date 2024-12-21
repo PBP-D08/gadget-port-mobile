@@ -4,13 +4,15 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      colorScheme: ColorScheme.light(
-        primary: const Color(0xFF222831), // Primary color (Navbar)
-        secondary: const Color(0xFF00ADB5), // Secondary color (Accent color)
+      colorScheme: const ColorScheme.light(
+        primary: Color(0xFF222831), // Primary color (Navbar)
+        secondary: Color(0xFF00ADB5), // Secondary color (Accent color)
       ),
-      scaffoldBackgroundColor: const Color(0xFFEEEEEE), // Abu-abu terang untuk background
+      scaffoldBackgroundColor:
+          const Color(0xFFEEEEEE), // Abu-abu terang untuk background
       appBarTheme: AppBarTheme(
-        backgroundColor: const Color.fromARGB(255, 158, 197, 255), // Navbar background
+        backgroundColor:
+            const Color.fromARGB(255, 158, 197, 255), // Navbar background
         titleTextStyle: GoogleFonts.nunito(
           fontWeight: FontWeight.bold, // Apply bold weight to the font
           color: Colors.black, // Set text color

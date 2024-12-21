@@ -24,12 +24,14 @@ class _AddReviewPageState extends State<AddReviewPage> {
   String _reviewMessage = ""; // Mengubah reviewMessage menjadi string4
 
   Future<void> _submitReview() async {
-    final request = context.read<CookieRequest>(); // Mengambil CookieRequest dari provider
+    final request =
+        context.read<CookieRequest>(); // Mengambil CookieRequest dari provider
 
     if (_formKey.currentState!.validate()) {
       try {
         // Mengambil data pengguna dari provider
-        String username = UserInfo.data["username"] ?? "default_username"; // Ganti dengan username default jika null
+        String username = UserInfo.data["username"] ??
+            "default_username"; // Ganti dengan username default jika null
         print("CBA" + username);
         // Pastikan review message tidak kosong
         if (_reviewMessage.isEmpty) {
@@ -53,28 +55,29 @@ class _AddReviewPageState extends State<AddReviewPage> {
             'username': username,
             'rating': _rating.toString(), // Kirim rating sebagai string
             'review_message': _reviewMessage,
-            'id': widget.productId.toString(), // Pastikan id dikirim sebagai string
+            'id': widget.productId
+                .toString(), // Pastikan id dikirim sebagai string
           }),
         );
 
-if (context.mounted) {
-  if (response['status'] == 'success') {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Your review has been published!"),
-        backgroundColor: Color.fromARGB(255, 100, 153, 233),
-      ),
-    );
-    // Kembali ke homepage
-    Navigator.popUntil(context, (route) => route.isFirst);
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Terdapat kesalahan, silakan coba lagi."),
-      ),
-    );
-  }
-}
+        if (context.mounted) {
+          if (response['status'] == 'success') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Your review has been published!"),
+                backgroundColor: Color.fromARGB(255, 100, 153, 233),
+              ),
+            );
+            // Kembali ke homepage
+            Navigator.popUntil(context, (route) => route.isFirst);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Terdapat kesalahan, silakan coba lagi."),
+              ),
+            );
+          }
+        }
       } catch (e) {
         print('Error: $e');
       }
@@ -176,15 +179,20 @@ if (context.mounted) {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: const Color.fromARGB(255, 100, 153, 233),
                       backgroundColor: Colors.white,
-                      side: BorderSide(color: const Color.fromARGB(255, 100, 153, 233)),
+                      side: BorderSide(
+                          color: const Color.fromARGB(255, 100, 153, 233)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0), // Tinggi tombol diperbesar
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0,
+                          vertical: 20.0), // Tinggi tombol diperbesar
                     ),
                     child: const Text(
                       'Submit Review',
-                      style: TextStyle(color: Color.fromARGB(255, 100, 153, 233), fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 100, 153, 233),
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         'assets/images/Logo_gadget-port.png', // Make sure this path is correct
         height: 40, // Adjust the size of the logo
       ),
-      backgroundColor: Color.fromARGB(
+      backgroundColor: const Color.fromARGB(
           255, 191, 219, 254), // Adjust the AppBar background color
       centerTitle: true, // Center the logo
     );

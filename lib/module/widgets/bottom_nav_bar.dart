@@ -138,8 +138,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
         );
         break;
       case 4:
-        targetScreen = const WishlistPage();
-        // targetScreen = const HomeScreen();
+        // targetScreen = const WishlistScreen();
+        targetScreen = const HomeScreen();
         break;
       case 5:
         targetScreen = const StoreListPage();
