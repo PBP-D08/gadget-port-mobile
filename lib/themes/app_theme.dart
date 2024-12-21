@@ -24,9 +24,11 @@ class AppTheme {
         selectedItemColor: Color(0xFF00ADB5), // Icon color when selected
         unselectedItemColor: Color(0xFF393E46), // Icon color when not selected
       ),
-      textTheme: const TextTheme(
-        bodyLarge: TextStyle(color: Colors.black, fontSize: 18),
-        bodyMedium: TextStyle(color: Colors.black, fontSize: 16),
+      textTheme: GoogleFonts.nunitoTextTheme(
+        const TextTheme(
+          bodyLarge: TextStyle(color: Colors.black, fontSize: 18),
+          bodyMedium: TextStyle(color: Colors.black, fontSize: 16),
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
